@@ -1,8 +1,13 @@
 CC = gcc
 CFLAGS = -I${CURDIR}/include -O2
-OBJECTS = src/main.c
+OBJECTS_EU = src/euler.c
+OBJECTS_CN = src/crank-nicolson.c
 
-run: $(OBJECTS)
-	$(CC) $(CFLAGS) -o run $(OBJECTS)
+eu: $(OBJECTS_EU)
+	$(CC) $(CFLAGS) -o run $(OBJECTS_EU)
+
+cn: $(OBJECTS_CN)
+	$(CC) $(CFLAGS) -o run $(OBJECTS_CN)
+
 clean:
 	rm -rf run

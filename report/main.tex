@@ -1,0 +1,64 @@
+\documentclass[a4paper, titlepage]{article}
+\input{packages}
+
+%%% Il documento vero e proprio %%%
+\begin{document}
+\input{frontespizio}
+\newcommand{\sch}[0]{Schrödinger }
+
+\section{Introduzione}
+L'obiettivo di questo progetto è risolvere numericamente l'equazione di Schrödinger in una dimensione:
+\begin{equation}
+    i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, .
+    \label{eq:sch}
+\end{equation}
+Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $x \in [-L,L]$ e si impongono le condizioni al contorno $\psi(-L,t) = \psi(L,t) = 0$.
+
+\section{Metodo di Eulero esplicito}
+Il primo approccio è quello di utilizzare il metodo di Eulero esplicito. 
+Per prima cosa, si usano le differenze finite per stimare le derivate della funzione d'onda che compaiono in \eqref{eq:sch}. Siano $x = x_0 + \Delta x$ e $t = t_0 + \Delta t$, si ottiene:
+\begin{align*}
+    &\pdv{\psi(x, t)}{t} = \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} + \mathcal{O}(\Delta t)\, , \\
+    &\pdv[2]{\psi(x, t)}{x} = \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t)}{\Delta x^2} + \mathcal{O}\, .(\Delta x^2)
+\end{align*}
+L'equazione di Schrödinger diventa quindi:
+\begin{equation*}
+    i \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} = 
+    - \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t_0)}{\Delta x^2} + V(x_0)\psi(x_0, t_0)\, .
+\end{equation*}
+Prendendo $\Delta x = 2L/(N+1)$, si possono definire la funzione d'onda e il potenziale calcolati sui punti della griglia come
+\begin{align*}
+    &\psi_i^k = \psi(-L + i\Delta x, t_0 + k\Delta t) \qquad i = 0,1,\dots,N+1 \quad k = 0,1,\dots,M \\
+    &V_i = V(-L + i\Delta x) \qquad\qquad\qquad\ i = 0,1,\dots,N+1
+\end{align*}
+e si può scrivere l'equazione in modo più chiaro:
+\begin{equation*}
+    i \frac{\psi_i^{k+1} - \psi_i^k}{\Delta t} = 
+    - \frac{\psi_{i+1}^k - 2\psi_i^k + \psi_{i-1}^k}{\Delta x^2} + V_i\psi_i^k\, .
+\end{equation*}
+Isolando il termine $\psi_i^{k+1}$ e semplificando, si ottiene
+\begin{equation}
+    \psi_i^{k+1} = \eta \psi_{i+1}^k + (1 - 2\eta + \Delta\tau V_i)\psi_i^k + \eta\psi_{i-1}^k\, ,
+    \label{eq:evol}
+\end{equation}
+dove $\Delta\tau = -i\Delta t$ e $\eta = - \Delta\tau/\Delta x^2$. L'equazione \eqref{eq:evol} rappresenta l'evoluzione temporale della funzione d'onda. Come ultimo passaggio, si può definire il vettore
+\begin{equation*}
+    \bm{\psi}_k = (\psi_1^k,\psi_2^k,\dots,\psi_N^k)^T
+\end{equation*}
+e l'equazione \eqref{eq:evol} diventa
+\begin{equation*}
+    \bm{\psi}_{k+1} = A\bm{\psi}_k
+\end{equation*}
+con
+\begin{equation*} 
+    A = \begin{pmatrix}
+    1-2\eta + \Delta\tau V_1 & \eta & 0 & \cdots & 0 \\
+    \eta & 1-2\eta + \Delta\tau V_2 & \eta & \cdots & 0 \\
+     0 & \eta & 1-2\eta + \Delta\tau V_3 & \cdots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \eta \\
+    0 & 0 & 0 & \eta & 1-2\eta + \Delta\tau V_N 
+    \end{pmatrix}\, . 
+\end{equation*}
+
+
+\end{document}

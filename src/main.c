@@ -19,7 +19,7 @@ void mul_mat_vec(int N, double complex A[N][N], double complex v[N]) {
     for (int i = 0; i < N; i++) {
         res[i] = 0.0;
         for (int j = 0; j < N; j++) {
-            res[i] += A[i][j] * v[j];
+            res[i] += A[i][j] * v[j]; //this can be made more efficient, one needs to calculate only three values!
         }
     }
     for (int i = 0; i < N; i++) {

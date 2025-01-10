@@ -1,2 +1,35 @@
-# VSCode
+# Executables
+*.x
+run
+
+# VS Code
 .vscode
+
+# Files
+
+
+# Mac stuff
+.DS_Store
+
+#TEX
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.bcf
+*.fdb_latexmk
+*.fls
+*.blg
+*.run.xml
+main-frn.pdf
+main-frn.tex
+*.bcf-SAVE-ERROR
+*.bbl-SAVE-ERROR
+
+# notes
+notes.txt
+
+# images
+*.png

@@ -47,7 +47,7 @@ int main(int arcv, char** argv) {
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
-    fprintf(f_psi, "\n");
+    fprintf(f_psi, ",norm_sq\n");
     // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", -dt, 1.0, 0.0, 1.0); // initial normalization
 
     // evolution matrix
@@ -80,7 +80,7 @@ int main(int arcv, char** argv) {
             for (int i = 0; i < N; i++) {
                 fprintf(f_psi, ",%.10f,%.10f", creal(psi[i]), cimag(psi[i]));
             }
-            fprintf(f_psi, "\n");
+            fprintf(f_psi, ",%.10f\n", normalization);
         }
     }
 

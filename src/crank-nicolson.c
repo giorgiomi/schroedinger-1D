@@ -33,7 +33,7 @@ void mul_tridiagmat_vec(int N, double complex A[N][N], double complex v[N]) {
 int main(int arcv, char** argv) {
     // parameters
     double L = 1.0;                             // box size
-    int N = 400;                                // number of grid separations
+    int N = 100;                                // number of grid separations
     int M = 30000;                              // number of time steps
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
@@ -47,7 +47,7 @@ int main(int arcv, char** argv) {
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
-    fprintf(f_psi, "\n");
+    fprintf(f_psi, ",norm_sq\n");
     // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", -dt, 1.0, 0.0, 1.0); // initial normalization
 
     // potential
@@ -115,7 +115,7 @@ int main(int arcv, char** argv) {
             for (int i = 0; i < N; i++) {
                 fprintf(f_psi, ",%.10f,%.10f", creal(psi[i]), cimag(psi[i]));
             }
-            fprintf(f_psi, "\n");
+            fprintf(f_psi, ",%.10f\n", normalization);
         }
     }
 

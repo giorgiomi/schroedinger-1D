@@ -14,14 +14,16 @@ double V(double x) {
     return 0.0;
 }
 
-void mul_mat_vec(int N, double complex A[N][N], double complex v[N]) {
+void mul_tridiagmat_vec(int N, double complex A[N][N], double complex v[N]) {
     double complex res[N];
-    for (int i = 0; i < N; i++) {
-        res[i] = 0.0;
-        for (int j = 0; j < N; j++) {
-            res[i] += A[i][j] * v[j]; //this can be made more efficient, one needs to calculate only three values!
-        }
+
+    // since the matrix is tridiagonal, the computation is more efficient -> O(N)
+    res[0] = A[0][0] * v[0] + A[0][1] * v[1];
+    for (int i = 1; i < N-1; i++) {
+        res[i] = A[i][i-1] * v[i-1] + A[i][i] * v[i] + A[i][i+1] * v[i+1];
     }
+    res[N-1] = A[N-1][N-2] * v[N-2] + A[N-1][N-1] * v[N-1];
+
     for (int i = 0; i < N; i++) {
         v[i] = res[i];
     }
@@ -71,9 +73,7 @@ int main(int arcv, char** argv) {
 
     // simulation
     for (int k = 0; k < M; k++) {
-        // printf("%d\n", k);
-        // printf("%.3f\n", creal(psi[0]));
-        mul_mat_vec(N, A, psi);             // evolution step
+        mul_tridiagmat_vec(N, A, psi);             // evolution step
         double normalization = norm_squared(N, psi, dx);
         if (k % 10 == 0) {
             fprintf(f_psi, "%.10f", k*dt);
@@ -82,7 +82,6 @@ int main(int arcv, char** argv) {
             }
             fprintf(f_psi, "\n");
         }
-        // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", k*dt, creal(psi[20]), cimag(psi[20]), normalization);
     }
 
 

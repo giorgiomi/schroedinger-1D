@@ -14,7 +14,7 @@ L'obiettivo di questo progetto è risolvere numericamente l'equazione di Schröd
 \end{equation}
 Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $x \in [-L,L]$ e si impongono le condizioni al contorno $\psi(-L,t) = \psi(L,t) = 0$.
 
-\section{Metodo di Eulero esplicito}
+\subsection{Metodo di Eulero esplicito}
 Il primo approccio è quello di utilizzare il metodo di Eulero esplicito. 
 Per prima cosa, si usano le differenze finite per stimare le derivate della funzione d'onda che compaiono in \eqref{eq:sch}. Siano $x = x_0 + \Delta x$ e $t = t_0 + \Delta t$, si ottiene:
 \begin{align*}
@@ -59,7 +59,56 @@ con
     0 & 0 & 0 & \eta & 1-2\eta + \Delta\tau V_N 
     \end{pmatrix}\, . 
 \end{equation*}
-La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore.
+La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore. Inoltre, scrivendo $A = \mathbb{1} + i\Delta t H$, si ottiene direttamente la matrice Hamiltioniana, che è indipendente dal passo temporale $\Delta t$.
+
+\subsection{Metodo di Crank-Nicolson}
+Il metodo di Crank-Nicolson combina mezzo passo del metodo di Eulero esplicito con mezzo passo del metodo implicito. Utilizzando la matrice $H$ appena calcolata, il passo esplicito da fare è
+\begin{equation*}
+    \bm{\psi}_{k+1/2} = \left(\mathbb{1} + i\frac{\Delta t}{2} H\right)\bm{\psi}_k\, ,
+\end{equation*}
+seguito dal passo implicito, cioè
+\begin{equation*}
+    \left(\mathbb{1} - i\frac{\Delta t}{2} H\right)\bm{\psi}_{k+1} = \bm{\psi}_{k+1/2}\, .
+\end{equation*}
+Per risolvere il passo implicito, sia $M = \left(\mathbb{1} - i\frac{\Delta t}{2} H\right)$. Come si è già visto, questa matrice è tridiagonale e può essere fattorizzata nel seguente modo:
+\begin{equation*} 
+    M = 
+    \begin{pmatrix}
+        a_1 & c_1 & 0 & 0 & \cdots \\
+        e_2 & a_2 & c_2 & 0 & \cdots \\
+        0 & e_3 & a_3 & c_3 & \cdots \\
+        0 & 0 & e_4 & a_4 & \cdots \\
+        \vdots & \vdots & \vdots & \vdots & \ddots 
+    \end{pmatrix} = 
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 & \cdots \\
+        \beta_2 & 1 & 0 & 0 & \cdots \\
+        0 & \beta_3 & 1 & 0 & \cdots \\
+        0 & 0 & \beta_4 & 1 & \cdots \\
+        \vdots & \vdots & \vdots & \vdots & \ddots 
+    \end{pmatrix}
+    \begin{pmatrix}
+        \alpha_1 & \gamma_1 & 0 & 0 & \cdots \\
+        0 & \alpha_2 & \gamma_2 & 0 & \cdots \\
+        0 & 0 & \alpha_3 & \gamma_3 & \cdots \\
+        0 & 0 & 0 & \alpha_4 & \cdots \\
+        \vdots & \vdots & \vdots & \vdots & \ddots 
+    \end{pmatrix}
+    = LU\, .
+\end{equation*}
+Nel caso considerato, i coefficienti di $M$ sono
+\begin{equation*}
+    a_i = 1 + \eta - V_i \frac{\Delta\tau}{2}\, , \qquad\qquad
+    c_i = e_i = -\frac{\eta}{2}
+\end{equation*}
+e da questi si possono ricavare quelli di $L$ e $U$ partendo da $\alpha_1 = a_1$:
+\begin{equation*}
+    \beta_i = -\frac{\eta}{2\alpha_{i-1}}\, ,
+    \qquad
+    \gamma_i = -\frac{\eta}{2}\, ,
+    \qquad
+    \alpha_i = a_i - \frac{\eta}{4\alpha_{i-1}}\, .
+\end{equation*}
 
 \section{Simulazione di particella libera}
 Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale $\psi(0,0) = 1$ e $\psi(x,0) = 0\ \forall x \neq 0$.

@@ -19,7 +19,7 @@ Il primo approccio è quello di utilizzare il metodo di Eulero esplicito.
 Per prima cosa, si usano le differenze finite per stimare le derivate della funzione d'onda che compaiono in \eqref{eq:sch}. Siano $x = x_0 + \Delta x$ e $t = t_0 + \Delta t$, si ottiene:
 \begin{align*}
     &\pdv{\psi(x, t)}{t} = \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} + \mathcal{O}(\Delta t)\, , \\
-    &\pdv[2]{\psi(x, t)}{x} = \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t)}{\Delta x^2} + \mathcal{O}\, .(\Delta x^2)
+    &\pdv[2]{\psi(x, t)}{x} = \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t)}{\Delta x^2} + \mathcal{O}(\Delta x^2)\, .
 \end{align*}
 L'equazione di Schrödinger diventa quindi:
 \begin{equation*}
@@ -59,6 +59,9 @@ con
     0 & 0 & 0 & \eta & 1-2\eta + \Delta\tau V_N 
     \end{pmatrix}\, . 
 \end{equation*}
+La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore.
 
+\section{Simulazione di particella libera}
+Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale $\psi(0,0) = 1$ e $\psi(x,0) = 0\ \forall x \neq 0$.
 
 \end{document}

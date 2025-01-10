@@ -6,7 +6,7 @@ double norm_squared(int N, double complex psi[N], double dx) {
     for (int i = 0; i < N; i++) {
         res += psi[i]*conj(psi[i]);
     }
-    res += dx;
+    // res *= dx;
     return res;
 }
 
@@ -30,17 +30,22 @@ void mul_mat_vec(int N, double complex A[N][N], double complex v[N]) {
 
 int main(int arcv, char** argv) {
     // parameters
-    double L = 1.0;                         // box size
-    int N = 100;                            // number of grid separations
-    int M = 10000;                           // number of time steps
-    double dx = 2 * L / (double)(N + 1);    // space interval
-    double dt = 1e-6;                        // time interval
-    double complex dtau = - dt * I;         // complex tau interval
-    double complex eta = - dtau / (dx * dx);
+    double L = 1.0;                             // box size
+    int N = 100;                                // number of grid separations
+    int M = 30000;                              // number of time steps
+    double dx = 2 * L / (double)(N + 1);        // space interval
+    double dt = 1e-6;                           // time interval
+    double complex dtau = - dt * I;             // complex tau interval
+    double complex eta = - dtau / (dx * dx);    // eta parameter
 
     // files
     FILE* f_psi = fopen("data/psi.csv", "w");
-    fprintf(f_psi, "t,re,im,norm_sq\n");
+    // fprintf(f_psi, "t,re,im,norm_sq\n");
+    fprintf(f_psi, "t");
+    for (int i = 0; i < N; i++) {
+        fprintf(f_psi, ",re%d,im%d", i, i);
+    }
+    fprintf(f_psi, "\n");
     // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", -dt, 1.0, 0.0, 1.0); // initial normalization
 
     // evolution matrix
@@ -70,7 +75,14 @@ int main(int arcv, char** argv) {
         // printf("%.3f\n", creal(psi[0]));
         mul_mat_vec(N, A, psi);             // evolution step
         double normalization = norm_squared(N, psi, dx);
-        fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", k*dt, creal(psi[50]), cimag(psi[50]), normalization);
+        if (k % 10 == 0) {
+            fprintf(f_psi, "%.10f", k*dt);
+            for (int i = 0; i < N; i++) {
+                fprintf(f_psi, ",%.10f,%.10f", creal(psi[i]), cimag(psi[i]));
+            }
+            fprintf(f_psi, "\n");
+        }
+        // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", k*dt, creal(psi[20]), cimag(psi[20]), normalization);
     }
 
 

@@ -10,27 +10,22 @@ double normSquared(int N, double *f, double dx) {
     return res;
 }
 
-double normSquaredSimpson(int N, double *f, double dx){
-    double integral = f[N-1] * dx / 3;
-
-    // assume N even
-    for (int i = 1; i <= N/2 - 1; i++) {
-        integral += (2 * dx / 3) * f[2 * i - 1];
-        integral += (4 * dx / 3) * f[2 * i - 2];
+double normSquaredLeft(int N, double *f, double dx) {
+    double res = 0.0;
+    for (int i = 0; i < (N - 1)/2; i++) {
+        res += f[i];
     }
-    integral += (4 * dx / 3) * f[N-2];
-
-    return integral /= dx;
+    res *= dx;
+    return res;
 }
 
-double normSquaredTrap(int N, double *f, double dx){
-    double integral = f[N-1] * dx / 2;
-
-    for (int i = 1; i < N; i++) {
-        integral += dx * f[i - 1];
+double normSquaredRight(int N, double *f, double dx) {
+    double res = 0.0;
+    for (int i = (N + 1)/2; i < N; i++) {
+        res += f[i];
     }
-
-    return integral /= dx;
+    res *= dx;
+    return res;
 }
 
 void mul_tridiagmat_vec(int N, double complex **A, double complex *v) {

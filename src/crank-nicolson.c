@@ -4,8 +4,9 @@
 #include <math.h>
 #include "functions.h"
 
-double potential(double x) {
-    return 0.0;
+double potential(double x, double V0, double a) {
+    return V0 * (x * x - a) * (x * x - a);
+    // return 0.0;
 }
 
 int main(int arcv, char** argv) {
@@ -17,26 +18,29 @@ int main(int arcv, char** argv) {
     double dt = 1e-6;                               // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
+    double V0 = 200000.0;                                // potential strength
+    double A = 0.25;                                // double well separation parameter
 
     printf("==================================================================================\n");    
     printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
-    FILE* f_psi = fopen("data/free/C-N.csv", "w");
+    FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
     fprintf(f_psi, "t");
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
-    fprintf(f_psi, ",norm_sq,x,x2\n");
+    fprintf(f_psi, ",norm_sq,p_l,p_r\n");
 
-    FILE* f_param = fopen("data/free/param.csv", "w");
+    FILE* f_param = fopen("data/trapped/param.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt\n");
     fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f\n", N, M, L, dx, dt);
 
     // potential
     double V[N];
     for (int i = 0; i < N; i++) {
-        V[i] = potential(-L + (i + 1) * dx);
+        V[i] = potential(-L + (i + 1) * dx, V0, A);
+        // printf("V[%d] = %.4f\n", i, V[i]);
     }
 
     // explicit evolution matrix (half time step)
@@ -73,22 +77,20 @@ int main(int arcv, char** argv) {
 
     // initial condition
     double complex psi[N];
-    psi[(N - 1)/2] = 1.0 / sqrt(dx);
+    int i_start = (int)((L - sqrt(A)) / dx) - 1;
+    // printf("i_start = %d", i_start);
+    psi[i_start] = 1.0 / sqrt(dx);
     for (int i = 0; i < N; i++) {
-        if (i != (N - 1) / 2) {
+        if (i != i_start) {
             psi[i] = 0.0;
         }
     }
-    // for (int i = 0; i < N; i++) {
-    //     // psi[i] = cos(M_PI * (-L + i * dx) / 2);
-    //     psi[i] = sin(M_PI * (-L + i * dx)*2);
-    // }
 
     // simulation
     double complex y[N];
     for (int k = 0; k < M; k++) {
-        printf("\rStep %d of %d", k + 1, M);
-        fflush(stdout);
+        // printf("\rStep %d of %d", k + 1, M);
+        // fflush(stdout);
         // explicit half-step
         mul_tridiagmat_vec(N, A_half, psi);
 
@@ -114,9 +116,11 @@ int main(int arcv, char** argv) {
                 x2_psi_norm[i] = x * x * psi_norm[i];
             }
             double normalization = normSquared(N, psi_norm, dx);
+            double prob_left = normSquaredLeft(N, psi_norm, dx);
+            double prob_right = normSquaredRight(N, psi_norm, dx);
             double x_mean = normSquared(N, x_psi_norm, dx);
             double x2_mean = normSquared(N, x2_psi_norm, dx);
-            printLineOnFile(f_psi, N, k*dt, psi, normalization, x_mean, x2_mean);
+            printLineOnFile(f_psi, N, k*dt, psi, normalization, prob_left, prob_right);
         }
     }
 

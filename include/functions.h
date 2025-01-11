@@ -12,20 +12,22 @@ dx: spatial step size
 double normSquared(int N, double *f, double dx);
 
 /*
-Computes the normalization of a function at a fixed time USING SIMPSON
+Computes the half-integral (L) of a function at a fixed time
 N: array length
 f: function array
 dx: spatial step size
 */
-double normSquaredSimpson(int N, double *f, double dx);
+double normSquaredLeft(int N, double *f, double dx);
 
 /*
-Computes the normalization of a function at a fixed time USING TRAPEZOIDS
+Computes the half-integral (R) of a function at a fixed time
 N: array length
 f: function array
 dx: spatial step size
 */
-double normSquaredTrap(int N, double *f, double dx);
+double normSquaredRight(int N, double *f, double dx);
+
+
 
 /*
 Computes the multiplication between a tridiagonal matrix and a vector

@@ -4,8 +4,8 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 from functions import getParam
 
-data = pd.read_csv("data/free/C-N.csv")
-N, M, L, dx, dt = getParam("data/free/param.csv")
+data = pd.read_csv("data/trapped/C-N.csv")
+N, M, L, dx, dt = getParam("data/trapped/param.csv")
 
 # Extract time and psi data
 time = data.iloc[:, 0].values

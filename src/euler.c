@@ -8,14 +8,17 @@ int main(int arcv, char** argv) {
     // parameters
     double L = 1.0;                             // box size
     int N = 100;                                // number of grid separations
-    int M = 30000;                              // number of time steps
+    int M = 3e4;                              // number of time steps
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
     double complex dtau = - dt * I;             // complex tau interval
     double complex eta = - dtau / (dx * dx);    // eta parameter
 
+    printf("==================================================================================\n");    
+    printf("Running Eu with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+
     // files
-    FILE* f_psi = fopen("data/EU.csv", "w");
+    FILE* f_psi = fopen("data/free/EU.csv", "w");
     fprintf(f_psi, "t");
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
@@ -69,6 +72,9 @@ int main(int arcv, char** argv) {
             printLineOnFile(f_psi, N, k*dt, psi, normalization, x_mean, x2_mean);
         }
     }
+
+    printf("\n\nSimulation completed 🎉🎊\n");
+    printf("==================================================================================\n");
 
     for (int i = 0; i < N; i++) {
         free(A[i]);

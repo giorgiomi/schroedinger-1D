@@ -19,17 +19,17 @@ int main(int arcv, char** argv) {
     double complex eta = - dtau / (dx * dx);    // eta parameter
 
     printf("==================================================================================\n");    
-    printf("Running simulation with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+    printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
-    FILE* f_psi = fopen("data/C-N.csv", "w");
+    FILE* f_psi = fopen("data/free/C-N.csv", "w");
     fprintf(f_psi, "t");
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
     fprintf(f_psi, ",norm_sq,x,x2\n");
 
-    FILE* f_param = fopen("data/param.csv", "w");
+    FILE* f_param = fopen("data/free/param.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt\n");
     fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f\n", N, M, L, dx, dt);
 

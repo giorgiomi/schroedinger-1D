@@ -6,7 +6,7 @@ double normSquared(int N, double *f, double dx) {
     for (int i = 0; i < N; i++) {
         res += f[i];
     }
-    // res *= dx;
+    res *= dx;
     return res;
 }
 

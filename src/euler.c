@@ -44,7 +44,7 @@ int main(int arcv, char** argv) {
 
     // initial condition
     double complex psi[N];
-    psi[(N - 1)/2] = 1.0;
+    psi[(N - 1)/2] = 1.0 / sqrt(dx);
     for (int i = 0; i < N; i++) {
         if (i != (N - 1) / 2) {
             psi[i] = 0.0;

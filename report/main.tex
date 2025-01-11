@@ -123,7 +123,13 @@ e poi ricorsivamente $U\mathbf{x} = \mathbf{y}$:
 \end{equation}
 
 \section{Simulazione di particella libera}
-Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale $\psi(0,0) = 1$ e $\psi(x,0) = 0\ \forall x \neq 0$. Si fanno andare le simulazioni con $N = 100$ divisioni spaziali, $L=1$, $M = \num{3e4}$ passi temporali, $\Delta t = \num{1e-6}$. 
+Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale
+\[
+    \psi(x = 0, 0) = \frac{1}{\sqrt{\Delta x}}\, ,
+    \qquad
+    \psi(x,0) = 0\ \forall x \neq 0\, .
+\]
+Si fanno andare le simulazioni con $N = 199$ divisioni spaziali, $\Delta x = \num{1e-2}$, $L=1$, $M = \num{3e4}$ passi temporali, $\Delta t = \num{1e-6}$. 
 
 La struttura delle simulazioni con i due metodi è semplice:
 \begin{itemize}
@@ -135,26 +141,27 @@ Per studiare il comportamento di entrambi i metodi, si calcola ad ogni passo tem
 \[
     \mathcal{N}(t) = \int_{-L}^L |\psi(x,t)|^2 \dd{x}\, .
 \]
-Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione!
+Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione e $\mathcal{N}(t)$ cresce esponenzialmente!
 Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come per le equazioni differenziali ordinarie, la convergenza non è garantita. 
 
 \begin{figure}[h!]
     \centering
-    \begin{minipage}{0.49 \textwidth}
+    \begin{minipage}{0.47 \textwidth}
         \centering
         \includegraphics[width = \linewidth]{figures/norm.png}
         \caption{Evoluzione temporale della normalizzazione della funzione d'onda nei due metodi}
         \label{fig:norm}
     \end{minipage}
-    \begin{minipage}{0.49 \textwidth}
+    \hspace{0.02\textwidth}
+    \begin{minipage}{0.47 \textwidth}
         \centering
         \includegraphics[width = \linewidth]{figures/pos.png}
-        \caption{Evoluzione temporale dei valori di aspettazione $\langle x \rangle$ e $\langle x^2 \rangle$ nella simulazione con Crank-Nicolson}
+        \caption{Evoluzione temporale del valore di aspettazione $\langle x \rangle$ e di $\sigma_x$ nella simulazione con Crank-Nicolson}
         \label{fig:pos}
     \end{minipage}
 \end{figure}
 
-È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale dei valori medi $\langle x \rangle$ e $\langle x^2 \rangle$ in figura \ref{fig:pos}.
+È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale del valor medio $\langle x \rangle$ e della deviazione standard $\sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2}$ in figura \ref{fig:pos}.
 
 
 

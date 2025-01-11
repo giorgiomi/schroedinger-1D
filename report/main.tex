@@ -9,7 +9,7 @@
 \section{Introduzione}
 L'obiettivo di questo progetto è risolvere numericamente l'equazione di Schrödinger in una dimensione:
 \begin{equation}
-    i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, .
+    i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{1}{2}\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, .
     \label{eq:sch}
 \end{equation}
 Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $x \in [-L,L]$ e si impongono le condizioni al contorno $\psi(-L,t) = \psi(L,t) = 0$. Si vogliono studiare i casi di particella libera $V(x) = 0$ e di potenziale a doppia buca $V(x) = V_0(x^2-a^2)^2$.
@@ -24,7 +24,7 @@ Per prima cosa, si usano le differenze finite per stimare le derivate della funz
 L'equazione di Schrödinger diventa quindi:
 \begin{equation*}
     i \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} = 
-    - \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t_0)}{\Delta x^2} + V(x_0)\psi(x_0, t_0)\, .
+    - \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t_0)}{2\Delta x^2} + V(x_0)\psi(x_0, t_0)\, .
 \end{equation*}
 Prendendo $\Delta x = 2L/(N+1)$, si possono definire la funzione d'onda e il potenziale calcolati sui punti della griglia come
 \begin{align*}
@@ -34,14 +34,14 @@ Prendendo $\Delta x = 2L/(N+1)$, si possono definire la funzione d'onda e il pot
 e si può scrivere l'equazione in modo più chiaro:
 \begin{equation*}
     i \frac{\psi_i^{k+1} - \psi_i^k}{\Delta t} = 
-    - \frac{\psi_{i+1}^k - 2\psi_i^k + \psi_{i-1}^k}{\Delta x^2} + V_i\psi_i^k\, .
+    - \frac{\psi_{i+1}^k - 2\psi_i^k + \psi_{i-1}^k}{2\Delta x^2} + V_i\psi_i^k\, .
 \end{equation*}
 Isolando il termine $\psi_i^{k+1}$ e semplificando, si ottiene
 \begin{equation}
     \psi_i^{k+1} = \eta \psi_{i+1}^k + (1 - 2\eta + \Delta\tau V_i)\psi_i^k + \eta\psi_{i-1}^k\, ,
     \label{eq:evol}
 \end{equation}
-dove $\Delta\tau = -i\Delta t$ e $\eta = - \Delta\tau/\Delta x^2$. L'equazione \eqref{eq:evol} rappresenta l'evoluzione temporale della funzione d'onda. Come ultimo passaggio, si può definire il vettore
+dove $\Delta\tau = -i\Delta t$ e $\eta = - \Delta\tau/2\Delta x^2$. L'equazione \eqref{eq:evol} rappresenta l'evoluzione temporale della funzione d'onda. Come ultimo passaggio, si può definire il vettore
 \begin{equation*}
     \bm{\psi}_k = (\psi_1^k,\psi_2^k,\dots,\psi_N^k)^T
 \end{equation*}

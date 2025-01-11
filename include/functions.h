@@ -9,7 +9,15 @@ N: array length
 psi: wave function array
 dx: spatial step size
 */
-double norm_squared(int N, double _Complex *psi, double dx);
+double normSquared(int N, double _Complex *psi, double dx);
+
+/*
+Computes the normalization of the wave function at a fixed time USING SIMPSON
+N: array length
+psi: wave function array
+dx: spatial step size
+*/
+double normSquaredSimpson(int N, double _Complex *psi, double dx);
 
 /*
 Computes the multiplication between a tridiagonal matrix and a vector

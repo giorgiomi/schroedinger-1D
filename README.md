@@ -11,13 +11,15 @@ where $\hbar = m = 1$. We are interested in the region $x \in [-L,L]$ and we tak
 ## Compilation and execution
 Compile in the repository directory using:
 ```
-    make
+    make cn
+    make eu
 ```
-An executable named `run` will be generated. Use
+depending on the solver you want to use (`cn` stands for Crank-Nicolson and `eu` for Euler). An executable named `run` will be generated. Use
 ```
     ./run
 ```
 to execute it. Then, to plot the results one can use
 ```
     python3 plots/normalization.py
+    python3 plots/motion.py
 ```

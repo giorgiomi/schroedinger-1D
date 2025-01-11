@@ -11,5 +11,6 @@ plt.figure()
 plt.plot(t, norm_sqCN, label='CN')
 plt.plot(t, norm_sqEU, label='EU')
 plt.legend()
+plt.yscale('log')
 
 plt.show()

@@ -1,13 +1,26 @@
 #include <stdio.h>
 #include <complex.h>
 
-double norm_squared(int N, double complex *psi, double dx) {
+double normSquared(int N, double complex *psi, double dx) {
     double res = 0.0;
     for (int i = 0; i < N; i++) {
         res += psi[i]*conj(psi[i]);
     }
     // res *= dx;
     return res;
+}
+
+double normSquaredSimpson(int N, double complex *psi, double dx){
+    double integral = (psi[N-1] * conj(psi[N-1])) * dx / 3;
+
+    // assume N even
+    for (int i = 1; i <= N/2 - 1; i++) {
+        integral += (2 * dx / 3) * (psi[2 * i - 1] * conj(psi[2 * i - 1]));
+        integral += (4 * dx / 3) * (psi[2 * i - 2] * conj(psi[2 * i - 2]));
+    }
+    integral += (4 * dx / 3) * (psi[N-2] * conj(psi[N-2]));
+
+    return integral;
 }
 
 void mul_tridiagmat_vec(int N, double complex **A, double complex *v) {

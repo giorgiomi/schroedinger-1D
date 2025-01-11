@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
+#include <math.h>
 #include "functions.h"
 
 double potential(double x) {
@@ -10,7 +11,7 @@ double potential(double x) {
 int main(int arcv, char** argv) {
     // parameters
     double L = 1.0;                             // box size
-    int N = 100;                                // number of grid separations
+    int N = 1000;                                // number of grid separations
     int M = 30000;                              // number of time steps
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
@@ -23,7 +24,7 @@ int main(int arcv, char** argv) {
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
-    fprintf(f_psi, ",norm_sq\n");
+    fprintf(f_psi, ",norm_sq,x,x2\n");
 
     // potential
     double V[N];
@@ -69,6 +70,10 @@ int main(int arcv, char** argv) {
     for (int i = 1; i < N; i++) {
         psi[i] = 0.0;
     }
+    // for (int i = 0; i < N; i++) {
+    //     // psi[i] = cos(M_PI * (-L + i * dx) / 2);
+    //     psi[i] = sin(M_PI * (-L + i * dx)*2);
+    // }
 
     // simulation
     double complex y[N];
@@ -86,11 +91,21 @@ int main(int arcv, char** argv) {
             psi[i] = y[i] / alpha[i] - psi[i+1] * gamma / alpha[i];
         }
         // evolution done!
-
         
         if (k % 10 == 0) {
-            double normalization = normSquaredTrap(N, psi, dx);
-            printLineOnFile(f_psi, N, k*dt, psi, normalization);
+            double psi_norm[N];
+            double x_psi_norm[N];
+            double x2_psi_norm[N];
+            for (int i = 0; i < N; i++) {
+                double x = -L + (i + 1) * dx;
+                psi_norm[i] = psi[i] * conj(psi[i]);
+                x_psi_norm[i] = x * psi_norm[i];
+                x2_psi_norm[i] = x * x * psi_norm[i];
+            }
+            double normalization = normSquared(N, psi_norm, dx);
+            double x_mean = normSquared(N, x_psi_norm, dx);
+            double x2_mean = normSquared(N, x2_psi_norm, dx);
+            printLineOnFile(f_psi, N, k*dt, psi, normalization, x_mean, x2_mean);
         }
     }
 

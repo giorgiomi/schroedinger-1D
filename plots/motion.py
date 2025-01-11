@@ -22,9 +22,9 @@ def update(frame):
     line_norm.set_ydata(psi_real[frame, :]**2 + psi_imag[frame, :]**2)
     return line_real, line_imag, line_norm
 
-ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=10)
+ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=100)
 plt.xlabel('Position')
 plt.ylabel('Psi')
 plt.title('Motion plot of Psi')
-plt.ylim(-1, 1)  # Allow y-axis to adjust automatically
+plt.ylim(-1, 1) 
 plt.show()

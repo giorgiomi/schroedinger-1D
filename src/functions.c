@@ -1,33 +1,33 @@
 #include <stdio.h>
 #include <complex.h>
 
-double normSquared(int N, double complex *psi, double dx) {
+double normSquared(int N, double *f, double dx) {
     double res = 0.0;
     for (int i = 0; i < N; i++) {
-        res += psi[i]*conj(psi[i]);
+        res += f[i];
     }
     // res *= dx;
     return res;
 }
 
-double normSquaredSimpson(int N, double complex *psi, double dx){
-    double integral = (psi[N-1] * conj(psi[N-1])) * dx / 3;
+double normSquaredSimpson(int N, double *f, double dx){
+    double integral = f[N-1] * dx / 3;
 
     // assume N even
     for (int i = 1; i <= N/2 - 1; i++) {
-        integral += (2 * dx / 3) * (psi[2 * i - 1] * conj(psi[2 * i - 1]));
-        integral += (4 * dx / 3) * (psi[2 * i - 2] * conj(psi[2 * i - 2]));
+        integral += (2 * dx / 3) * f[2 * i - 1];
+        integral += (4 * dx / 3) * f[2 * i - 2];
     }
-    integral += (4 * dx / 3) * (psi[N-2] * conj(psi[N-2]));
+    integral += (4 * dx / 3) * f[N-2];
 
     return integral /= dx;
 }
 
-double normSquaredTrap(int N, double complex *psi, double dx){
-    double integral = (psi[N-1] * conj(psi[N-1])) * dx / 2;
+double normSquaredTrap(int N, double *f, double dx){
+    double integral = f[N-1] * dx / 2;
 
     for (int i = 1; i < N; i++) {
-        integral += dx * (psi[i - 1] * conj(psi[i - 1]));
+        integral += dx * f[i - 1];
     }
 
     return integral /= dx;
@@ -49,11 +49,11 @@ void mul_tridiagmat_vec(int N, double complex **A, double complex *v) {
     return;
 }
 
-void printLineOnFile(FILE *f, int N, double time, double _Complex *psi, double norm) {
+void printLineOnFile(FILE *f, int N, double time, double _Complex *psi, double norm, double x_mean, double x2_mean) {
     fprintf(f, "%.10f", time);
         for (int i = 0; i < N; i++) {
             fprintf(f, ",%.10f,%.10f", creal(psi[i]), cimag(psi[i]));
         }
-    fprintf(f, ",%.10f\n", norm);
+    fprintf(f, ",%.10f,%.10f,%.10f\n", norm, x_mean, x2_mean);
     return;
 }

@@ -4,28 +4,28 @@
 #include <complex.h>
 
 /*
-Computes the normalization of the wave function at a fixed time
+Computes the normalization of a function at a fixed time
 N: array length
-psi: wave function array
+f: function array
 dx: spatial step size
 */
-double normSquared(int N, double _Complex *psi, double dx);
+double normSquared(int N, double *f, double dx);
 
 /*
-Computes the normalization of the wave function at a fixed time USING SIMPSON
+Computes the normalization of a function at a fixed time USING SIMPSON
 N: array length
-psi: wave function array
+f: function array
 dx: spatial step size
 */
-double normSquaredSimpson(int N, double _Complex *psi, double dx);
+double normSquaredSimpson(int N, double *f, double dx);
 
 /*
-Computes the normalization of the wave function at a fixed time USING TRAPEZOIDS
+Computes the normalization of a function at a fixed time USING TRAPEZOIDS
 N: array length
-psi: wave function array
+f: function array
 dx: spatial step size
 */
-double normSquaredTrap(int N, double _Complex *psi, double dx);
+double normSquaredTrap(int N, double *f, double dx);
 
 /*
 Computes the multiplication between a tridiagonal matrix and a vector
@@ -42,7 +42,9 @@ N: wave function array length
 time: specify time to print
 psi: wave function array
 norm: total normalization
+x_mean: expected x value
+x2_mean: expected x^2 value
 */
-void printLineOnFile(FILE *f, int N, double time, double _Complex *psi, double norm);
+void printLineOnFile(FILE *f, int N, double time, double _Complex *psi, double norm, double x_mean, double x2_mean);
 
 #endif

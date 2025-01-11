@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
+#include <math.h>
 #include "functions.h"
 
 int main(int arcv, char** argv) {
@@ -19,7 +20,7 @@ int main(int arcv, char** argv) {
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
-    fprintf(f_psi, ",norm_sq\n");
+    fprintf(f_psi, ",norm_sq,x,x2\n");
 
     // evolution matrix
     double complex **A = malloc(N * sizeof(_Complex double *));
@@ -40,9 +41,12 @@ int main(int arcv, char** argv) {
 
     // initial condition
     double complex psi[N];
-    psi[0] = 1.0;
-    for (int i = 1; i < N; i++) {
-        psi[i] = 0.0;
+    // psi[0] = 1.0;
+    // for (int i = 1; i < N; i++) {
+    //     psi[i] = 0.0;
+    // }
+    for (int i = 0; i < N; i++) {
+        psi[i] = cos(M_PI * (-L + i * dx) / 2);
     }
 
     // simulation
@@ -50,8 +54,19 @@ int main(int arcv, char** argv) {
         mul_tridiagmat_vec(N, A, psi);             // evolution step
 
         if (k % 10 == 0) {
-            double normalization = normSquaredTrap(N, psi, dx);
-            printLineOnFile(f_psi, N, k*dt, psi, normalization);
+            double psi_norm[N];
+            double x_psi_norm[N];
+            double x2_psi_norm[N];
+            for (int i = 0; i < N; i++) {
+                double x = -L + (i + 1) * dx;
+                psi_norm[i] = psi[i] * conj(psi[i]);
+                x_psi_norm[i] = x * psi_norm[i];
+                x2_psi_norm[i] = x * x * psi_norm[i];
+            }
+            double normalization = normSquared(N, psi_norm, dx);
+            double x_mean = normSquared(N, x_psi_norm, dx);
+            double x2_mean = normSquared(N, x2_psi_norm, dx);
+            printLineOnFile(f_psi, N, k*dt, psi, normalization, x_mean, x2_mean);
         }
     }
 

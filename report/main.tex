@@ -134,7 +134,7 @@ Si fanno andare le simulazioni con $N = 199$ divisioni spaziali, $\Delta x = \nu
 La struttura delle simulazioni con i due metodi è semplice:
 \begin{itemize}
     \item Nel caso del metodo di Eulero esplicito, ad ogni passo basta effettuare la moltiplicazione matrice per vettore di equazione \eqref{eq:evol_mat}. Come già accennato, siccome la matrice è tridiagonale, la computazione è meno dispendiosa: si tratta di un algoritmo $\mathcal{O}(N)$ invece che $\mathcal{O}(N^2)$, dove la matrice è $N\times N$.
-    \item Per il metodo di Crank-Nicolson invece, per ogni passo della simulazione si esegue il mezzo passo esplicito allo stesso modo di Eulero e poi si inverte la matrice del passo implicito con le regole di ricorsione \eqref{eq:recZ}, \eqref{eq:recA} e \eqref{eq:recB}, che sono anch'esse $\mathcal{O}(N)$.
+    \item Per il metodo di Crank-Nicolson invece, per ogni passo della simulazione si esegue il mezzo passo esplicito allo stesso modo di Eulero e poi si inverte la matrice del passo implicito con le regole di ricorsione \eqref{eq:recZ}, \eqref{eq:recA} e \eqref{eq:recB}, che sono anch'esse implementabili in $\mathcal{O}(N)$.
 \end{itemize}
 
 Per studiare il comportamento di entrambi i metodi, si calcola ad ogni passo temporale la normalizzazione della funzione d'onda, cioè
@@ -161,12 +161,50 @@ Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come
     \end{minipage}
 \end{figure}
 
-È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale del valor medio $\langle x \rangle$ e della deviazione standard $\sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2}$ in figura \ref{fig:pos}.
+È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale del valor medio $\langle x \rangle$ e della deviazione standard $\sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2}$ in figura \ref{fig:pos}. Come ci si aspetta (si veda l'appendice \ref{sec:evol}), il valor medio della posizione $x$ è nullo e la deviazione standard cresce linearmente nel tempo, almeno fino al raggiungimento dei lati della scatola.
 
 
 
 \section{Simulazione con potenziale a doppia buca}
 
+\appendix
 
+\section{Evoluzione temporale e valori di aspettazione}
+\label{sec:evol}
+Data l'equazione di Schrödinger
+\[
+    i\pdv{t}|\psi(t)\rangle = H|\psi(t)\rangle 
+    \qquad \text{con} \qquad
+    H = -\pdv[2]{x} = \frac{p^2}{2}\, ,
+\]
+si vogliono calcolare i valori di aspettazione $\langle\psi(t)|x|\psi(t)\rangle$ e $\langle\psi(t)|x^2|\psi(t)\rangle$. Lo stato all'istante $t$ è determinato dall'operatore di evoluzione temporale:
+\[
+    |\psi(t)\rangle = U(t)|\psi(t)\rangle = e^{-itH} |\psi(0)\rangle\, .
+\]
+Il valore di aspettazione di $x$ risulta perciò
+\begin{equation}
+    \langle\psi(t)|x|\psi(t)\rangle = \langle\psi(0)|U^\dagger(t) x U(t)|\psi(0)\rangle = \langle\psi(0)|x_H(t)|\psi(0)\rangle\, ,
+    \label{eq:exp_x}
+\end{equation}
+dove si è definito l'operatore $x_H(t)$ in rappresentazione di Heisenberg. La sua evoluzione è dettata dall'equazione di Heisenberg per gli operatori:
+\[
+    i\dv{t}x_H(t) = [x_H(t), H]\, .
+\]
+È facile far vedere che il commutatore a destra dell'equazione è $[x_H(t), H] = ip$, e quindi l'operatore posizione è 
+\[
+    x_H(t) = x_H(0) + pt\, .
+\]
+Ora si può usare l'equazione \eqref{eq:exp_x} sostituendo la forma dell'operatore $x_H(t)$ e si ottiene
+\begin{equation*}
+    \langle x \rangle = \langle\psi(0)|x(0)|\psi(0)\rangle + \langle\psi(0)|p|\psi(0)\rangle t\, ,
+\end{equation*}
+dove si è sfruttato il fatto che $x_H(0) = x(0)$. Il primo termine si annulla prendendo come stato iniziale l'autostato della posizione $|x = 0\rangle$. Il secondo termine è nullo perché l'operatore $p$ è dispari e lo stato iniziale, invece, è pari. Quindi, in queste condizioni, $\langle x \rangle = 0$. Allo stesso modo si calcola il valore di aspettazione di $x^2$:
+\begin{equation*}
+    \langle x^2 \rangle = \langle\psi(0)|p^2|\psi(0)\rangle t^2\, ,
+\end{equation*}
+che non si annulla perché $p^2$ è pari. Infine, la deviazione standard è
+\[
+    \sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2} = \sqrt{\langle x^2 \rangle} \propto t\, .
+\]
 
 \end{document}

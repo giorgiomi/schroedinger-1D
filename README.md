@@ -3,7 +3,7 @@
 The equation we want to solve is the following:
 
 ```math
-    i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, ,
+    i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{1}{2}\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, ,
 ```
 
 where $\hbar = m = 1$. We are interested in the region $x \in [-L,L]$ and we take as boundary conditions $\psi(-L,t) = \psi(L,t) = 0$ for all $t$.

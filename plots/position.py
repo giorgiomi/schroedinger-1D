@@ -14,9 +14,9 @@ x2_CN = dataCN['x2']
 # x2_EU = dataEU['x2']
 
 plt.figure()
-plt.plot(t, x_CN, label=r'$\langle x \rangle$')
+plt.plot(t, x_CN, label=r'$\langle x \rangle$', color='tab:green')
 # plt.plot(t, x2_CN, label=r'$\langle x^2 \rangle$')
-plt.plot(t, np.sqrt(x2_CN - x_CN**2), label=r'$\sigma_x$')
+plt.plot(t, np.sqrt(x2_CN - x_CN**2), label=r'$\sigma_x$', color='tab:red')
 plt.title(fr'position averages N = {N}, L = {L}, dt = {dt}')
 plt.xlabel('t')
 # plt.ylabel('x')

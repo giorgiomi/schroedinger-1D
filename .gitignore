@@ -33,3 +33,6 @@ notes.txt
 
 # images
 *.png
+
+# Python
+__pycache__

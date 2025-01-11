@@ -10,13 +10,16 @@ double potential(double x) {
 
 int main(int arcv, char** argv) {
     // parameters
+    int N = 100;                                // number of grid separations
+    int M = 3e4;                              // number of time steps
     double L = 1.0;                             // box size
-    int N = 1000;                                // number of grid separations
-    int M = 30000;                              // number of time steps
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
     double complex dtau = - dt * I;             // complex tau interval
     double complex eta = - dtau / (dx * dx);    // eta parameter
+
+    printf("==================================================================================\n");    
+    printf("Running simulation with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
     FILE* f_psi = fopen("data/C-N.csv", "w");
@@ -25,6 +28,10 @@ int main(int arcv, char** argv) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
     fprintf(f_psi, ",norm_sq,x,x2\n");
+
+    FILE* f_param = fopen("data/param.csv", "w");
+    fprintf(f_param, "N,M,L,dx,dt\n");
+    fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f\n", N, M, L, dx, dt);
 
     // potential
     double V[N];
@@ -78,6 +85,8 @@ int main(int arcv, char** argv) {
     // simulation
     double complex y[N];
     for (int k = 0; k < M; k++) {
+        printf("\rStep %d of %d", k + 1, M);
+        fflush(stdout);
         // explicit half-step
         mul_tridiagmat_vec(N, A_half, psi);
 
@@ -108,6 +117,9 @@ int main(int arcv, char** argv) {
             printLineOnFile(f_psi, N, k*dt, psi, normalization, x_mean, x2_mean);
         }
     }
+
+    printf("\n\nSimulation completed 🎉🎊\n");
+    printf("==================================================================================\n");
 
     for (int i = 0; i < N; i++) {
         free(A_half[i]);

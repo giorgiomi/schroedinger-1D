@@ -41,13 +41,13 @@ int main(int arcv, char** argv) {
 
     // initial condition
     double complex psi[N];
-    // psi[0] = 1.0;
-    // for (int i = 1; i < N; i++) {
-    //     psi[i] = 0.0;
-    // }
-    for (int i = 0; i < N; i++) {
-        psi[i] = cos(M_PI * (-L + i * dx) / 2);
+    psi[0] = 1.0;
+    for (int i = 1; i < N; i++) {
+        psi[i] = 0.0;
     }
+    // for (int i = 0; i < N; i++) {
+    //     psi[i] = cos(M_PI * (-L + i * dx) / 2);
+    // }
 
     // simulation
     for (int k = 0; k < M; k++) {

@@ -20,6 +20,14 @@ dx: spatial step size
 double normSquaredSimpson(int N, double _Complex *psi, double dx);
 
 /*
+Computes the normalization of the wave function at a fixed time USING TRAPEZOIDS
+N: array length
+psi: wave function array
+dx: spatial step size
+*/
+double normSquaredTrap(int N, double _Complex *psi, double dx);
+
+/*
 Computes the multiplication between a tridiagonal matrix and a vector
 N: vector length
 A: tridiagonal matrix

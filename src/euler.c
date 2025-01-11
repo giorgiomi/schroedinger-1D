@@ -6,7 +6,7 @@
 int main(int arcv, char** argv) {
     // parameters
     double L = 1.0;                             // box size
-    int N = 50;                                // number of grid separations
+    int N = 100;                                // number of grid separations
     int M = 30000;                              // number of time steps
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
@@ -50,7 +50,7 @@ int main(int arcv, char** argv) {
         mul_tridiagmat_vec(N, A, psi);             // evolution step
 
         if (k % 10 == 0) {
-            double normalization = normSquaredSimpson(N, psi, dx);
+            double normalization = normSquaredTrap(N, psi, dx);
             printLineOnFile(f_psi, N, k*dt, psi, normalization);
         }
     }

@@ -20,7 +20,17 @@ double normSquaredSimpson(int N, double complex *psi, double dx){
     }
     integral += (4 * dx / 3) * (psi[N-2] * conj(psi[N-2]));
 
-    return integral;
+    return integral /= dx;
+}
+
+double normSquaredTrap(int N, double complex *psi, double dx){
+    double integral = (psi[N-1] * conj(psi[N-1])) * dx / 2;
+
+    for (int i = 1; i < N; i++) {
+        integral += dx * (psi[i - 1] * conj(psi[i - 1]));
+    }
+
+    return integral /= dx;
 }
 
 void mul_tridiagmat_vec(int N, double complex **A, double complex *v) {

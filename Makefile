@@ -4,10 +4,10 @@ OBJECTS_EU = src/euler.c src/functions.c
 OBJECTS_CN = src/crank-nicolson.c src/functions.c
 
 eu: $(OBJECTS_EU)
-	$(CC) $(CFLAGS) -o run $(OBJECTS_EU)
+	$(CC) $(CFLAGS) -o eu.x $(OBJECTS_EU)
 
 cn: $(OBJECTS_CN)
-	$(CC) $(CFLAGS) -o run $(OBJECTS_CN)
+	$(CC) $(CFLAGS) -o cn.x $(OBJECTS_CN)
 
 clean:
 	rm -rf run

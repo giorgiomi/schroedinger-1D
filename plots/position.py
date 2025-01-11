@@ -4,13 +4,13 @@ from functions import getParam
 
 N, M, L, dx, dt = getParam("data/param.csv")
 dataCN = pd.read_csv("data/C-N.csv")
-dataEU = pd.read_csv("data/EU.csv")
+# dataEU = pd.read_csv("data/EU.csv")
 
 t = dataCN['t']
 x_CN = dataCN['x']
 x2_CN = dataCN['x2']
-x_EU = dataEU['x']
-x2_EU = dataEU['x2']
+# x_EU = dataEU['x']
+# x2_EU = dataEU['x2']
 
 plt.figure()
 plt.plot(t, x_CN, label=r'$\langle x \rangle$')

@@ -11,7 +11,7 @@ double potential(double x) {
 int main(int arcv, char** argv) {
     // parameters
     int N = 100;                                // number of grid separations
-    int M = 3e4;                              // number of time steps
+    int M = 3e4;                                // number of time steps
     double L = 1.0;                             // box size
     double dx = 2 * L / (double)(N + 1);        // space interval
     double dt = 1e-6;                           // time interval
@@ -67,7 +67,7 @@ int main(int arcv, char** argv) {
     for (int i = 1; i < N; i++) {
         a[i] = 1 + eta - V[i] * dtau / 2;
         beta[i] = -eta/(2*alpha[i-1]);
-        alpha[i] = a[i] - beta[i]/2;
+        alpha[i] = a[i] - (eta*eta)/(4*alpha[i-1]);
     }
     
 

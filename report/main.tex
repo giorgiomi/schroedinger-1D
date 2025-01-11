@@ -62,7 +62,7 @@ con
 La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore. Inoltre, scrivendo $A = \mathbb{1} + i\Delta t H$, si ottiene direttamente la matrice Hamiltioniana, che è indipendente dal passo temporale $\Delta t$.
 
 \subsection{Metodo di Crank-Nicolson}
-Il metodo di Crank-Nicolson combina mezzo passo del metodo di Eulero esplicito con mezzo passo del metodo implicito. Utilizzando la matrice $H$ appena calcolata, il passo esplicito da fare è
+Il metodo di Crank-Nicolson combina mezzo passo del metodo di Eulero esplicito con mezzo passo del metodo implicito. Utilizzando la matrice $H$ appena calcolata, il passo esplicito da fare è \footnote{Mentre la notazione $\bm{\psi}_k$ corrisponde a $\bm{\psi}(t)$, la notazione $\bm{\psi}_{k+1/2}$ corrisponde a $\bm{\psi}(t+\Delta t/2)$}
 \begin{equation*}
     \bm{\psi}_{k+1/2} = \left(\mathbb{1} + i\frac{\Delta t}{2} H\right)\bm{\psi}_k\, ,
 \end{equation*}
@@ -108,6 +108,14 @@ e da questi si possono ricavare quelli di $L$ e $U$ partendo da $\alpha_1 = a_1$
     \gamma_i = -\frac{\eta}{2}\, ,
     \qquad
     \alpha_i = a_i - \frac{\eta}{4\alpha_{i-1}}\, .
+\end{equation*}
+Infine, per risolvere $LU\mathbf{x} = \mathbf{b}$, con $\mathbf{x} = \bm{\psi}_{k+1}$ e $\mathbf{b} = \bm{\psi}_{k+1/2}$, si risolve prima ricorsivamente $L\mathbf{y} = \mathbf{b}$:
+\begin{equation*}
+    y_1 = b_1 \qquad y_i = b_i -\beta_i y_{i-1} \qquad i = 2,\dots,N
+\end{equation*}
+e poi ricorsivamente $U\mathbf{x} = \mathbf{y}$:
+\begin{equation*}
+    x_N = \frac{y_N}{\alpha_N} \qquad x_i = \frac{y_i}{\alpha_i} - \frac{x_{i+1}\gamma_i}{\alpha_i} \qquad i = N-1,\dots,0\, .
 \end{equation*}
 
 \section{Simulazione di particella libera}

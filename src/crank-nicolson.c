@@ -1,33 +1,10 @@
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
-
-double norm_squared(int N, double complex psi[N], double dx) {
-    double res = 0.0;
-    for (int i = 0; i < N; i++) {
-        res += psi[i]*conj(psi[i]);
-    }
-    // res *= dx;
-    return res;
-}
+#include <stdlib.h>
+#include "functions.h"
 
 double potential(double x) {
     return 0.0;
-}
-
-void mul_tridiagmat_vec(int N, double complex A[N][N], double complex v[N]) {
-    double complex res[N];
-
-    // since the matrix is tridiagonal, the computation is more efficient -> O(N)
-    res[0] = A[0][0] * v[0] + A[0][1] * v[1];
-    for (int i = 1; i < N-1; i++) {
-        res[i] = A[i][i-1] * v[i-1] + A[i][i] * v[i] + A[i][i+1] * v[i+1];
-    }
-    res[N-1] = A[N-1][N-2] * v[N-2] + A[N-1][N-1] * v[N-1];
-
-    for (int i = 0; i < N; i++) {
-        v[i] = res[i];
-    }
-    return;
 }
 
 int main(int arcv, char** argv) {
@@ -42,22 +19,23 @@ int main(int arcv, char** argv) {
 
     // files
     FILE* f_psi = fopen("data/C-N.csv", "w");
-    // fprintf(f_psi, "t,re,im,norm_sq\n");
     fprintf(f_psi, "t");
     for (int i = 0; i < N; i++) {
         fprintf(f_psi, ",re%d,im%d", i, i);
     }
     fprintf(f_psi, ",norm_sq\n");
-    // fprintf(f_psi, "%.10f,%.10f,%.10f,%.10f\n", -dt, 1.0, 0.0, 1.0); // initial normalization
 
     // potential
     double V[N];
     for (int i = 0; i < N; i++) {
-        V[i] = potential(-L + i * dx);
+        V[i] = potential(-L + (i + 1) * dx);
     }
 
-    // explicit evolution matrix
-    double complex A_half[N][N];
+    // explicit evolution matrix (half time step)
+    double complex **A_half = malloc(N * sizeof(_Complex double *));
+    for (int i = 0; i < N; i++) {
+        A_half[i] = malloc(N * sizeof(_Complex double));
+    }
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             if (i == j) {
@@ -109,17 +87,17 @@ int main(int arcv, char** argv) {
         }
         // evolution done!
 
-        double normalization = norm_squared(N, psi, dx);
+        
         if (k % 10 == 0) {
-            fprintf(f_psi, "%.10f", k*dt);
-            for (int i = 0; i < N; i++) {
-                fprintf(f_psi, ",%.10f,%.10f", creal(psi[i]), cimag(psi[i]));
-            }
-            fprintf(f_psi, ",%.10f\n", normalization);
+            double normalization = norm_squared(N, psi, dx);
+            printLineOnFile(f_psi, N, k*dt, psi, normalization);
         }
     }
 
-
+    for (int i = 0; i < N; i++) {
+        free(A_half[i]);
+    }
+    free(A_half);
     fclose(f_psi);
     return 0;
 }

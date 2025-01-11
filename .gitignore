@@ -6,7 +6,7 @@ run
 .vscode
 
 # Files
-
+.csv
 
 # Mac stuff
 .DS_Store

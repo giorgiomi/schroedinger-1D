@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -I${CURDIR}/include -O2
-OBJECTS_EU = src/euler.c
-OBJECTS_CN = src/crank-nicolson.c
+OBJECTS_EU = src/euler.c src/functions.c
+OBJECTS_CN = src/crank-nicolson.c src/functions.c
 
 eu: $(OBJECTS_EU)
 	$(CC) $(CFLAGS) -o run $(OBJECTS_EU)

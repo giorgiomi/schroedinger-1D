@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from functions import getParam
 
 N, M, L, dx, dt = getParam("data/free/param.csv")
@@ -15,7 +16,7 @@ x2_CN = dataCN['x2']
 plt.figure()
 plt.plot(t, x_CN, label=r'$\langle x \rangle$')
 plt.plot(t, x2_CN, label=r'$\langle x^2 \rangle$')
-plt.plot(t, x2_CN - x_CN**2, label=r'$\langle x^2 \rangle$ - $\langle x \rangle^2$')
+plt.plot(t, np.sqrt(x2_CN - x_CN**2), label=r'$\sigma_x$')
 plt.title(fr'position averages N = {N}, L = {L}, dt = {dt}')
 plt.xlabel('t')
 # plt.ylabel('x')

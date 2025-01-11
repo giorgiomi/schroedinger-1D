@@ -17,7 +17,7 @@ plt.legend()
 plt.title(fr'$\psi$ normalization N = {N}, L = {L}, dt = {dt}')
 plt.xlabel('t')
 plt.ylabel(r'$\mathcal{N}(t)$')
-# plt.yscale('log')
+plt.yscale('log')
 
 plt.savefig('report/figures/norm.png', dpi=500)
 plt.show()

@@ -10,7 +10,7 @@ double potential(double x) {
 
 int main(int arcv, char** argv) {
     // parameters
-    int N = 100;                                // number of grid separations
+    int N = 199;                                // number of grid separations
     int M = 3e4;                                // number of time steps
     double L = 1.0;                             // box size
     double dx = 2 * L / (double)(N + 1);        // space interval
@@ -73,9 +73,11 @@ int main(int arcv, char** argv) {
 
     // initial condition
     double complex psi[N];
-    psi[0] = 1.0;
-    for (int i = 1; i < N; i++) {
-        psi[i] = 0.0;
+    psi[(N - 1)/2] = 1.0;
+    for (int i = 0; i < N; i++) {
+        if (i != (N - 1) / 2) {
+            psi[i] = 0.0;
+        }
     }
     // for (int i = 0; i < N; i++) {
     //     // psi[i] = cos(M_PI * (-L + i * dx) / 2);

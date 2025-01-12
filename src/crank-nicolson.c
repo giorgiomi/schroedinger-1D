@@ -9,20 +9,23 @@ double potential(double x, double V0, double a) {
     // return 0.0;
 }
 
-int main(int arcv, char** argv) {
+int main(int argc, char** argv) {
     // parameters
     int N = 199;                                    // number of grid separations
-    int M = 1e4;                                    // number of time steps
+    int M = 1.5e4;                                    // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
     double dt = 1e-5;                               // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
-    double V0 = 1e3;                                // potential strength
-    double A = 0.5;                                // double well separation parameter
+    double V0;                                // potential strength
+    double A;                                // double well separation parameter
 
-    printf("==================================================================================\n");    
-    printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+    if (argc > 1) V0 = atof(argv[1]);
+    if (argc > 2) A = atof(argv[2]);
+
+    // printf("==================================================================================\n");    
+    // printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
     FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
@@ -89,8 +92,8 @@ int main(int arcv, char** argv) {
     // simulation
     double complex y[N];
     for (int k = 0; k < M; k++) {
-        printf("\rStep %d of %d", k + 1, M);
-        fflush(stdout);
+        // printf("\rStep %d of %d", k + 1, M);
+        // fflush(stdout);
         // explicit half-step
         mul_tridiagmat_vec(N, A_half, psi);
 
@@ -124,8 +127,8 @@ int main(int arcv, char** argv) {
         }
     }
 
-    printf("\n\nSimulation completed 🎉🎊\n");
-    printf("==================================================================================\n");
+    // printf("\n\nSimulation completed 🎉🎊\n");
+    // printf("==================================================================================\n");
 
     for (int i = 0; i < N; i++) {
         free(A_half[i]);

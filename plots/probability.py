@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from functions import getParam
-from scipy.signal import find_peaks
-
+import csv
 N, M, L, dx, dt, V0, a = getParam("data/trapped/param.csv")
 dataCN = pd.read_csv("data/trapped/C-N.csv")
 
@@ -15,7 +14,8 @@ prob_right = dataCN['p_r']
 intersection_indices = []
 for i in range(1, len(prob_left)):
     if (prob_left[i-1] - 0.5) * (prob_left[i] - 0.5) < 0:
-        intersection_indices.append(i)
+        if not intersection_indices or (i - intersection_indices[-1]) > intersection_indices[0] / 2:
+            intersection_indices.append(i)
 # print("Indices of intersection points with 0.5 in prob_left:", intersection_indices)
 
 # Transform the indices into times
@@ -26,14 +26,24 @@ time_differences = [intersection_times[i] - intersection_times[i-1] for i in ran
 # Keep only the time differences greater than the first one/2
 time_differences = [diff for diff in time_differences if diff > time_differences[0] / 2]
 
-# Calculate the average frequency
+# Calculate the average frequency and its error
 if time_differences:
     average_period = sum(time_differences) / len(time_differences)
     average_frequency = 1 / average_period
+    # Calculate the standard deviation of the periods
+    period_std = (sum((diff - average_period) ** 2 for diff in time_differences) / len(time_differences)) ** 0.5
+    # Calculate the error on the average frequency
+    frequency_error = period_std / (average_period ** 2)
 else:
     average_frequency = 0
+    frequency_error = 0
 
-print(f"Average Frequency: {average_frequency:.3f}")
+# Save the results to a CSV file
+with open('data/trapped/frequencies.csv', 'a', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow([a, average_frequency, frequency_error])
+
+exit()
 
 plt.figure()
 
@@ -54,7 +64,7 @@ plt.axhline(0.5, color='tab:red')
 # Add a box with the parameters V0 and a
 props = dict(boxstyle='round', facecolor='white')
 textstr = f'$V_0 = {V0}$\n$a = {a}$\n'
-textstr += fr'$\langle \nu \rangle = {average_frequency:.3f}$'
+textstr += fr'$\langle \nu \rangle = {average_frequency:.1f}\pm {frequency_error:.1f}$'
 plt.gcf().text(0.3, 0.18, textstr, fontsize=12, verticalalignment='bottom', bbox=props)
 plt.legend()
 plt.title(fr'Oscillation N = {N}, L = {L}, dt = {dt}')

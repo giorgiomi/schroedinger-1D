@@ -43,7 +43,7 @@ with open('data/trapped/frequencies.csv', 'a', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow([a, average_frequency, frequency_error])
 
-exit()
+# exit()
 
 plt.figure()
 
@@ -74,5 +74,5 @@ plt.ylabel(r'$P(t)$')
 plt.tight_layout()
 
 
-# plt.savefig('report/figures/norm.png', dpi=500)
+# plt.savefig('report/figures/prob.png', dpi=500)
 plt.show()

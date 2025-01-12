@@ -1,5 +1,6 @@
 \documentclass[a4paper, titlepage]{article}
 \input{packages}
+\numberwithin{equation}{section}
 
 %%% Il documento vero e proprio %%%
 \begin{document}
@@ -12,7 +13,7 @@ L'obiettivo di questo progetto è risolvere numericamente l'equazione di Schröd
     i\frac{\partial}{\partial t}\psi(x,t) = \left[-\frac{1}{2}\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)\, .
     \label{eq:sch}
 \end{equation}
-Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $x \in [-L,L]$ e si impongono le condizioni al contorno $\psi(-L,t) = \psi(L,t) = 0$. Si vogliono studiare i casi di particella libera $V(x) = 0$ e di potenziale a doppia buca $V(x) = V_0(x^2-a^2)^2$.
+Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $x \in [-L,L]$ e si impongono le condizioni al contorno $\psi(-L,t) = \psi(L,t) = 0$. Si vogliono studiare i casi di particella libera $V(x) = 0$ e di potenziale a doppia buca $V(x) = V_0(x^2-a)^2$.
 
 \subsection{Metodo di Eulero esplicito}
 Il primo approccio è quello di utilizzare il metodo di Eulero esplicito. 
@@ -124,11 +125,12 @@ e poi ricorsivamente $U\mathbf{x} = \mathbf{y}$:
 
 \section{Simulazione di particella libera}
 Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale
-\[
+\begin{equation}
     \psi(x = 0, 0) = \frac{1}{\sqrt{\Delta x}}\, ,
     \qquad
     \psi(x,0) = 0\ \forall x \neq 0\, .
-\]
+    \label{eq:initial}
+\end{equation}
 Si fanno andare le simulazioni con $N = 199$ divisioni spaziali, $\Delta x = \num{1e-2}$, $L=1$, $M = \num{3e4}$ passi temporali, $\Delta t = \num{1e-6}$. 
 
 La struttura delle simulazioni con i due metodi è semplice:
@@ -141,7 +143,8 @@ Per studiare il comportamento di entrambi i metodi, si calcola ad ogni passo tem
 \[
     \mathcal{N}(t) = \int_{-L}^L |\psi(x,t)|^2 \dd{x}\, .
 \]
-Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione e $\mathcal{N}(t)$ cresce esponenzialmente!
+Siccome la simulazione genera valori $\psi_i^k$ su uno spazio discreto, l'integrale si deve calcolare sommando i contributi di ogni divisione spaziale, ricordandosi che le condizioni al contorno annullano i contributi a $x = \pm L$.
+Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione e $\mathcal{N}(t)$ cresce esponenzialmente!\footnote{Questa è solo una stima visiva dal grafico.}
 Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come per le equazioni differenziali ordinarie, la convergenza non è garantita. 
 
 \begin{figure}[h!]
@@ -164,8 +167,37 @@ Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come
 È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale del valor medio $\langle x \rangle$ e della deviazione standard $\sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2}$ in figura \ref{fig:pos}. Come ci si aspetta (si veda l'appendice \ref{sec:evol}), il valor medio della posizione $x$ è nullo e la deviazione standard cresce linearmente nel tempo, almeno fino al raggiungimento dei lati della scatola.
 
 
-
 \section{Simulazione con potenziale a doppia buca}
+
+Ora viene simulato il sistema con potenziale $V(x) = V_0(x^2-a)^2$. In generale, i due minimi del potenziale si trovano a $x_{1,2} = \pm \sqrt{a}$, quindi come condizione iniziale si può prendere la stessa di equazione \eqref{eq:initial} ma con la funzione d'onda in $x_1 = -\sqrt{a}$ (la buca di sinistra). 
+
+È di particolare interesse calcolare la probabilità di misurare la particella in ciascuna delle due buche in funzione del tempo, e si può fare semplicemente così:
+\[
+    \mathcal{P}_L(t) = \int_{-L}^0 |\psi(x,t)|^2 \dd x\, ,
+    \qquad
+    \mathcal{P}_R(t) = \int_0^L |\psi(x,t)|^2 \dd x\, .
+\]
+Prendendo $N$ dispari, bisogna decidere se inserire il contributo centrale in $\mathcal{P}_L$ o  $\mathcal{P}_R$, ma in ogni caso ciò non è rilevante ai risultati della simulazione. 
+
+Per quanto riguarda i valori dei parametri $V_0$ e $a$, si può notare che $V(0) = V_0 a^2$, e questo stabilisce un ordine di grandezza per la doppia buca. Nel mezzo passo esplicito del metodo di Crank-Nicolson, la matrice di evoluzione temporale ha come valori della diagonale $1-\eta + \frac{\Delta\tau}{2} V_i$, e ciò suggerisce che l'ordine di grandezza del potenziale, per avere un contributo significativo, debba essere
+\[
+    |\Delta\tau| V_i \sim 1 
+    \qquad \Rightarrow \qquad
+    V_0 a^2 \sim \frac{1}{\Delta t}\, .
+\]
+Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25$ produrrebbero un potenziale troppo debole. Usando un passo $\Delta t = \num{1e-5}$, si usano $V_0 = \num{1e3}$ e $a = 0.25$.
+
+
+
+
+
+
+
+
+
+
+
+
 
 \appendix
 

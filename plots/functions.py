@@ -7,4 +7,6 @@ def getParam(path):
     L = data['L'].iloc[0]
     dx = data['dx'].iloc[0]
     dt = data['dt'].iloc[0]
-    return N, M, L, dx, dt
+    V0 = data['V0'].iloc[0]
+    a = data['a'].iloc[0]
+    return N, M, L, dx, dt, V0, a

@@ -12,7 +12,7 @@ double normSquared(int N, double *f, double dx) {
 
 double normSquaredLeft(int N, double *f, double dx) {
     double res = 0.0;
-    for (int i = 0; i < (N - 1)/2; i++) {
+    for (int i = 0; i <= (N - 1)/2; i++) {
         res += f[i];
     }
     res *= dx;

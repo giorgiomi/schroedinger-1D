@@ -12,14 +12,14 @@ double potential(double x, double V0, double a) {
 int main(int arcv, char** argv) {
     // parameters
     int N = 199;                                    // number of grid separations
-    int M = 3e4;                                    // number of time steps
+    int M = 1e4;                                    // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = 1e-6;                               // time interval
+    double dt = 1e-5;                               // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
-    double V0 = 200000.0;                                // potential strength
-    double A = 0.25;                                // double well separation parameter
+    double V0 = 1e3;                                // potential strength
+    double A = 0.5;                                // double well separation parameter
 
     printf("==================================================================================\n");    
     printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
@@ -33,8 +33,8 @@ int main(int arcv, char** argv) {
     fprintf(f_psi, ",norm_sq,p_l,p_r\n");
 
     FILE* f_param = fopen("data/trapped/param.csv", "w");
-    fprintf(f_param, "N,M,L,dx,dt\n");
-    fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f\n", N, M, L, dx, dt);
+    fprintf(f_param, "N,M,L,dx,dt,V0,a\n");
+    fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f,%.10f,%.10f\n", N, M, L, dx, dt, V0, A);
 
     // potential
     double V[N];
@@ -89,8 +89,8 @@ int main(int arcv, char** argv) {
     // simulation
     double complex y[N];
     for (int k = 0; k < M; k++) {
-        // printf("\rStep %d of %d", k + 1, M);
-        // fflush(stdout);
+        printf("\rStep %d of %d", k + 1, M);
+        fflush(stdout);
         // explicit half-step
         mul_tridiagmat_vec(N, A_half, psi);
 

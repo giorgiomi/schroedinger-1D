@@ -33,9 +33,9 @@ def update(frame):
     time_text.set_text(f'Time = {time[frame]:.4f}')
     return line_real, line_imag, line_norm, time_text
 
-ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=10)
+ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=100)
 plt.xlabel('x')
 plt.ylabel('Psi')
-plt.title(f'motion plot N = {N}, L = {L}, dt = {dt}')
+plt.title(f'motion plot N = {N}, L = {L}, dt = {dt:.2e}')
 plt.ylim(-10, 10) 
 plt.show()

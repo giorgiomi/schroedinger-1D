@@ -2,6 +2,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from functions import getParam
 import csv
+import warnings
+import sys
+warnings.filterwarnings("ignore")
+
+
 N, M, L, dx, dt, V0, a = getParam("data/trapped/param.csv")
 dataCN = pd.read_csv("data/trapped/C-N.csv")
 
@@ -25,25 +30,27 @@ intersection_times = [t[i] for i in intersection_indices]
 time_differences = [intersection_times[i] - intersection_times[i-1] for i in range(1, len(intersection_times))]
 # Keep only the time differences greater than the first one/2
 time_differences = [diff for diff in time_differences if diff > time_differences[0] / 2]
+k = len(time_differences)
 
 # Calculate the average frequency and its error
 if time_differences:
-    average_period = sum(time_differences) / len(time_differences)
-    average_frequency = 1 / average_period
+    T_avg = sum(time_differences) / k
+    f_avg = 1 / T_avg
     # Calculate the standard deviation of the periods
-    period_std = (sum((diff - average_period) ** 2 for diff in time_differences) / len(time_differences)) ** 0.5
+    T_std = (sum((diff - T_avg) ** 2 for diff in time_differences) / k) ** 0.5
     # Calculate the error on the average frequency
-    frequency_error = period_std / (average_period ** 2)
+    df = T_std / ((k ** 0.5) * (T_avg ** 2))
 else:
-    average_frequency = 0
-    frequency_error = 0
+    f_avg = 0
+    df = 0
 
 # Save the results to a CSV file
 with open('data/trapped/frequencies.csv', 'a', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow([a, average_frequency, frequency_error])
+    writer.writerow([a, f_avg, df])
 
-# exit()
+if sys.argv[1] != 'y':
+    exit()
 
 plt.figure()
 
@@ -64,7 +71,7 @@ plt.axhline(0.5, color='tab:red')
 # Add a box with the parameters V0 and a
 props = dict(boxstyle='round', facecolor='white')
 textstr = f'$V_0 = {V0}$\n$a = {a}$\n'
-textstr += fr'$\langle \nu \rangle = {average_frequency:.1f}\pm {frequency_error:.1f}$'
+textstr += fr'$\langle \nu \rangle = {f_avg:.1f}\pm {df:.1f}$'
 plt.gcf().text(0.3, 0.18, textstr, fontsize=12, verticalalignment='bottom', bbox=props)
 plt.legend()
 plt.title(fr'Oscillation N = {N}, L = {L}, dt = {dt}')

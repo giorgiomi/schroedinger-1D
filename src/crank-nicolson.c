@@ -12,28 +12,29 @@ double potential(double x, double V0, double a) {
 int main(int argc, char** argv) {
     // parameters
     int N = 199;                                    // number of grid separations
-    int M = 1.5e4;                                    // number of time steps
+    int M = 4.0e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = 1e-5;                               // time interval
+    double dt = 1e-4;                               // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
-    double V0;                                // potential strength
-    double A;                                // double well separation parameter
+    double V0;                                      // potential strength
+    double A;                                       // double well separation parameter
+    int n_print = 1;                               // print on file every n_print iteration
 
-    if (argc > 1) V0 = atof(argv[1]);
-    if (argc > 2) A = atof(argv[2]);
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <V0> <A>\n", argv[0]);
+        return 1;
+    }
+    V0 = atof(argv[1]);
+    A = atof(argv[2]);
 
     // printf("==================================================================================\n");    
     // printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
     FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
-    fprintf(f_psi, "t");
-    for (int i = 0; i < N; i++) {
-        fprintf(f_psi, ",re%d,im%d", i, i);
-    }
-    fprintf(f_psi, ",norm_sq,p_l,p_r\n");
+    printHeaderOnFile(f_psi, N, 0);
 
     FILE* f_param = fopen("data/trapped/param.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt,V0,a\n");
@@ -73,11 +74,10 @@ int main(int argc, char** argv) {
     alpha[0] = a[0];
     for (int i = 1; i < N; i++) {
         a[i] = 1 + eta - V[i] * dtau / 2;
-        beta[i] = -eta/(2*alpha[i-1]);
-        alpha[i] = a[i] - (eta*eta)/(4*alpha[i-1]);
+        beta[i] = -eta / (2 * alpha[i-1]);
+        alpha[i] = a[i] - (eta * eta) / (4 * alpha[i-1]);
     }
     
-
     // initial condition
     double complex psi[N];
     int i_start = (int)((L - sqrt(A)) / dx) - 1;
@@ -90,40 +90,22 @@ int main(int argc, char** argv) {
     }
 
     // simulation
-    double complex y[N];
     for (int k = 0; k < M; k++) {
         // printf("\rStep %d of %d", k + 1, M);
         // fflush(stdout);
-        // explicit half-step
-        mul_tridiagmat_vec(N, A_half, psi);
 
-        // implicit half-step
-        y[0] = psi[0];
-        for (int i = 1; i < N; i++) {
-            y[i] = psi[i] - beta[i] * y[i-1];
-        }
-        psi[N-1] = y[N-1]/alpha[N-1];
-        for (int i = N-2; i >= 0; i--) {
-            psi[i] = y[i] / alpha[i] - psi[i+1] * gamma / alpha[i];
-        }
-        // evolution done!
+        // evolution step in one line
+        crankNicolsonStep(N, A_half, psi, alpha, beta, gamma);
         
-        if (k % 10 == 0) {
+        // printing on file every n_print iterations 
+        if (k % n_print == 0) {
             double psi_norm[N];
-            double x_psi_norm[N];
-            double x2_psi_norm[N];
             for (int i = 0; i < N; i++) {
-                double x = -L + (i + 1) * dx;
                 psi_norm[i] = psi[i] * conj(psi[i]);
-                x_psi_norm[i] = x * psi_norm[i];
-                x2_psi_norm[i] = x * x * psi_norm[i];
             }
-            double normalization = normSquared(N, psi_norm, dx);
             double prob_left = normSquaredLeft(N, psi_norm, dx);
             double prob_right = normSquaredRight(N, psi_norm, dx);
-            double x_mean = normSquared(N, x_psi_norm, dx);
-            double x2_mean = normSquared(N, x2_psi_norm, dx);
-            printLineOnFile(f_psi, N, k*dt, psi, normalization, prob_left, prob_right);
+            printLineOnFile(f_psi, N, k*dt, NULL, 1.0, prob_left, prob_right);
         }
     }
 

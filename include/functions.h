@@ -49,4 +49,17 @@ x2_mean: expected x^2 value
 */
 void printLineOnFile(FILE *f, int N, double time, double _Complex *psi, double norm, double x_mean, double x2_mean);
 
+/*
+Prints line on file
+f: file pointer
+N: wave function array length
+psi_print: 0 if no, 1 if yes
+*/
+void printHeaderOnFile(FILE *f, int N, int psi_print);
+
+/*
+Executes a C-N step
+*/
+void crankNicolsonStep(int N, double complex **A_half, double complex *psi, double complex *alpha, double complex *beta, double complex gamma);
+
 #endif

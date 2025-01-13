@@ -63,6 +63,14 @@ int main(int argc, char** argv) {
         }
     }
 
+    // DEBUG: PRINT A_HALF
+    // for (int i = 0; i < N; i++) {
+    //     for (int j = 0; j < N; j++) {
+    //         printf("(%2.1f + %2.6fi) ", creal(A_half[i][j]), cimag(A_half[i][j]));
+    //     }
+    //     printf("\n");
+    // }
+
     // implicit C-N evolution coefficients
     double complex a[N];
     double complex alpha[N];

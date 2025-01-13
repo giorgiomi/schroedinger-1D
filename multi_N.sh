@@ -18,7 +18,7 @@ make cn
 echo "N,frequency,error" > data/trapped/frequencies.csv
 
 # run with different parameters
-for N in $(seq 99 $N_step 299); do
+for N in $(seq 49 $N_step 149); do
     echo -ne "Running simulation with N = $N\r"
     ./cn.x $N 0.0001 0.0 $a
     python3 plots/probability.py $plot N

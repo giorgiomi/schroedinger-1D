@@ -36,6 +36,6 @@ elif 'N' in data:
     plt.title(f'Frequenza di oscillazione con $a=${a}')
     plt.tight_layout()
 
-    # plt.savefig('report/figures/freq_vs_V0.png', dpi=500)
+    # plt.savefig('report/figures/freq_vs_N.png', dpi=500)
 
 plt.show()

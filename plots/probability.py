@@ -47,7 +47,10 @@ else:
 # Save the results to a CSV file
 with open('data/trapped/frequencies.csv', 'a', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow([a, f_avg, df])
+    if sys.argv[2] == 'a':
+        writer.writerow([a, f_avg, df])
+    elif sys.argv[2] == 'V0':
+        writer.writerow([V0, f_avg, df])
 
 if sys.argv[1] != 'y':
     exit()
@@ -82,5 +85,5 @@ plt.yticks([i * 0.1 for i in range(11)])  # Set y ticks to 0.1 intervals
 plt.tight_layout()
 
 
-plt.savefig(f'report/figures/prob_null.png', dpi=500)
+# plt.savefig(f'report/figures/prob_null.png', dpi=500)
 plt.show()

@@ -215,7 +215,7 @@ Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25
     \end{minipage}
     \hspace{0.02\textwidth}
     \begin{minipage}{0.47 \textwidth}
-        \hspace{\linewidth}
+        % \hspace{\linewidth}
     \end{minipage}
 \end{figure}
 Nelle figure \ref{fig:prob_null}, \ref{fig:prob_osc} e \ref{fig:prob_sep} si mostrano i risultati in tre esempi diversi:
@@ -224,15 +224,38 @@ Nelle figure \ref{fig:prob_null}, \ref{fig:prob_osc} e \ref{fig:prob_sep} si mos
     \item Il secondo caso ha $V_0 a^2 = \num{2.5e2}$. Ora la particella oscilla tra le due buche, ma il potenziale è ancora troppo basso purché resti confinata in una delle due. Questo caso è molto simile a $V_0 = 0$, $a \neq 0$, siccome il potenziale è ancora trascurabile rispetto all'energia cinetica.
     \item Nel terzo caso, $V_0 a^2 = \num{1.8e4}$. In accordo con la previsione di equazione \eqref{eq:extim}, a questo ordine di grandezza la particella risente del potenziale ed è quasi completamente confinata nella buca di partenza (sinistra).
 \end{itemize}
-Studiare la frequenza di oscillazione del moto non è semplice. Quando il potenziale è basso e non c'è confinamento, si può stimare il periodo medio di oscillazione prendendo gli istanti temporali in cui $\mathcal{P}_L(t) = 0.5$ e facendo una media degli intervalli.
+Studiare la frequenza di oscillazione del moto non è semplice. Quando il potenziale è basso e non c'è confinamento, si può stimare il periodo medio di oscillazione prendendo gli istanti temporali in cui $\mathcal{P}_L(t) = 0.5$ e calcolando la media degli intervalli tra questi istanti. Una stima dell'incertezza sul valor medio del periodo può essere fatta con la deviazione standard dei periodi (diviso la radice del numero di periodi). Quando il potenziale è troppo alto, invece, le probabilità non oscillano più attorno a $0.5$ e diventa difficile stimare i periodi. Per questo motivo, si decide di studiare solo i casi in cui il potenziale è basso.
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/freq_vs_a.png}
+        \caption{Stima della frequenza di oscillazione $\nu$ in funzione del parametro $a$ della doppia buca.}
+        \label{fig:freq_vs_a}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/freq_vs_V0.png}
+        \caption{Stima della frequenza di oscillazione $\nu$ in funzione del parametro $V_0$ della doppia buca.}
+        \label{fig:freq_vs_V0}
+    \end{minipage}
+\end{figure}
+I risulati, mostrati in figura \ref{fig:freq_vs_a} al variare di $a$ e in figura \ref{fig:freq_vs_V0} al variare di $V_0$, mostrano una bassa variazione della frequenza di oscillazione. Tuttavia, si nota immediatamente che i dati sono dominati dall'incertezza ed è difficile stabilire un andamento anche solo qualitativo della frequenza.
+
+\section{Conclusioni}
+In questo progetto si è studiata l'equazione di Schrödinger in una dimensione utilizzando due metodi numerici: il metodo di Eulero esplicito e il metodo di Crank-Nicolson. Entrambi i metodi sono stati implementati e i loro risultati confrontati attraverso simulazioni di una particella libera e di una particella in un potenziale a doppia buca.
+
+Le simulazioni hanno mostrato che il metodo di Eulero esplicito non conserva la normalizzazione della funzione d'onda, portando a risultati non fisici. Al contrario, il metodo di Crank-Nicolson ha dimostrato di essere stabile e di conservare la normalizzazione, rendendolo più adatto per questo tipo di problemi.
+
+Nel caso della particella libera, si è verificato che il valor medio della posizione rimane nullo e la deviazione standard cresce linearmente nel tempo, come previsto teoricamente. Questo conferma la corretta implementazione del metodo di Crank-Nicolson.
+
+Per il potenziale a doppia buca, si è osservato che la particella oscilla tra le due buche quando il potenziale è basso, mentre rimane parzialmente confinata nella buca di partenza quando il potenziale è alto. Si è anche studiata la frequenza di oscillazione della particella in funzione dei parametri del potenziale, trovando che la frequenza è dominata dall'incertezza e non mostra un andamento chiaro.
+
+Il metodo di Crank-Nicolson si è perciò rivelato efficace per la simulazione dell'equazione di Schrödinger in una dimensione, permettendo di studiare il comportamento di una particella in diversi potenziali. Tuttavia, ulteriori studi sono necessari per comprendere meglio l'andamento della frequenza di oscillazione nel caso del potenziale a doppia buca.
 
 
-
-
-
-
-
-
+\pagebreak
 \appendix
 
 \section{Evoluzione temporale e valori di aspettazione}

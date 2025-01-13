@@ -12,7 +12,7 @@ double potential(double x, double V0, double a) {
 int main(int argc, char** argv) {
     // parameters
     int N = 199;                                    // number of grid separations
-    int M = 4.0e3;                                  // number of time steps
+    int M = 1.5e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
     double dt = 1e-4;                               // time interval

@@ -21,7 +21,7 @@ echo "a,frequency,error" > data/trapped/frequencies.csv
 for a in $(seq 0.1 $a_step 0.9); do
     echo -ne "Running simulation with V0 = $V0 and a = $a\r"
     ./cn.x $V0 $a
-    python3 plots/probability.py $plot
+    python3 plots/probability.py $plot a
 done
 
 

@@ -152,7 +152,7 @@ Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come
     \begin{minipage}{0.47 \textwidth}
         \centering
         \includegraphics[width = \linewidth]{figures/norm.png}
-        \caption{Evoluzione temporale della normalizzazione della funzione d'onda nei due metodi}
+        \caption{Evoluzione temporale della normalizzazione della funzione d'onda nei due metodi (asse verticale in scala logaritmica)}
         \label{fig:norm}
     \end{minipage}
     \hspace{0.02\textwidth}
@@ -180,17 +180,51 @@ Ora viene simulato il sistema con potenziale $V(x) = V_0(x^2-a)^2$. In generale,
 Prendendo $N$ dispari, bisogna decidere se inserire il contributo centrale in $\mathcal{P}_L$ o  $\mathcal{P}_R$, ma in ogni caso ciò non è rilevante ai risultati della simulazione. 
 
 Per quanto riguarda i valori dei parametri $V_0$ e $a$, si può notare che $V(0) = V_0 a^2$, e questo stabilisce un ordine di grandezza per la doppia buca. Nel mezzo passo esplicito del metodo di Crank-Nicolson, la matrice di evoluzione temporale ha come valori della diagonale $1-\eta + \frac{\Delta\tau}{2} V_i$, e ciò suggerisce che l'ordine di grandezza del potenziale, per avere un contributo significativo, debba essere
-\[
+\begin{equation}
     |\Delta\tau| V_i \sim 1 
     \qquad \Rightarrow \qquad
     V_0 a^2 \sim \frac{1}{\Delta t}\, .
-\]
-Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25$ produrrebbero un potenziale troppo debole. Usando un passo $\Delta t = \num{1e-5}$, si usano $V_0 = \num{1e3}$ e $a = 0.25$.
-
-
-
-
-
+    \label{eq:extim}
+\end{equation}
+Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25$ produrrebbero un potenziale troppo debole. Si decide quindi di usare un passo $\Delta t = \num{1e-4}$ e poi andare a studiare il comportamento della simulazione per diversi valori di $V_0$ e $a$.
+% si usano $V_0 = \num{1e3}$ e $a = 0.25$.
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/prob_null.png}
+        \caption{Oscillazione di probabilità nella simulazione con doppia buca di potenziale. Quando $V_0 = 0$ e $a = 0$, non c'è oscillazione.}
+        \label{fig:prob_null}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/prob_osc.png}
+        \caption{Oscillazione di probabilità nella simulazione con doppia buca di potenziale. Quando il potenziale è basso, la particella non è confinata nella buca di partenza, e oscilla tra le due in modo simile al caso $V_0 = 0$, $a \neq 0$.}
+        \label{fig:prob_osc}
+    \end{minipage}
+\end{figure}
+\vspace{-0.5cm}
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/prob_sep.png}
+        \caption{Oscillazione di probabilità nella simulazione con doppia buca di potenziale. Quando il potenziale è alto, la particella è quasi completamente confinata nella buca di partenza.}
+        \label{fig:prob_sep}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}{0.47 \textwidth}
+        \hspace{\linewidth}
+    \end{minipage}
+\end{figure}
+Nelle figure \ref{fig:prob_null}, \ref{fig:prob_osc} e \ref{fig:prob_sep} si mostrano i risultati in tre esempi diversi:
+\begin{itemize}
+    \item Nel primo caso, $V_0 = 0$ e $a = 0$, quindi il potenziale è nullo e la particella libera si muove nella scatola. Partendo dal centro della scatola, non c'è oscillazione nella probabilità di misurarla a sinistra o destra ed entrambe valgono $\sim 0.5$.
+    \item Il secondo caso ha $V_0 a^2 = \num{2.5e2}$. Ora la particella oscilla tra le due buche, ma il potenziale è ancora troppo basso purché resti confinata in una delle due. Questo caso è molto simile a $V_0 = 0$, $a \neq 0$, siccome il potenziale è ancora trascurabile rispetto all'energia cinetica.
+    \item Nel terzo caso, $V_0 a^2 = \num{1.8e4}$. In accordo con la previsione di equazione \eqref{eq:extim}, a questo ordine di grandezza la particella risente del potenziale ed è quasi completamente confinata nella buca di partenza (sinistra).
+\end{itemize}
+Studiare la frequenza di oscillazione del moto non è semplice. Quando il potenziale è basso e non c'è confinamento, si può stimare il periodo medio di oscillazione prendendo gli istanti temporali in cui $\mathcal{P}_L(t) = 0.5$ e facendo una media degli intervalli.
 
 
 

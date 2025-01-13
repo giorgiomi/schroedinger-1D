@@ -62,4 +62,9 @@ Executes a C-N step
 */
 void crankNicolsonStep(int N, double complex **A_half, double complex *psi, double complex *alpha, double complex *beta, double complex gamma);
 
+/*
+Executes a T-S step
+*/
+void trotterSuzukiStep(int N, double *V, double dt, double complex *psi, double complex eta);
+
 #endif

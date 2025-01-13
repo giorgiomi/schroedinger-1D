@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <complex.h>
+#include <math.h>
 
 double normSquared(int N, double *f, double dx) {
     double res = 0.0;
@@ -81,4 +82,20 @@ void crankNicolsonStep(int N, double complex **A_half, double complex *psi, doub
     }
     // evolution done!
     return;
+}
+
+void trotterSuzukiStep(int N, double *V, double dt, double complex *psi, double complex eta) {
+    double complex exp_V[N];
+    for (int i = 0; i < N; i++) {
+        exp_V[i] = cexp(I * V[i] * dt/2);
+        psi[i] *= exp_V[i];
+    }
+
+
+
+
+    for (int i = 0; i < N; i++) {
+        psi[i] *= exp_V[i];
+    }
+
 }

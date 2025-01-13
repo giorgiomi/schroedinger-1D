@@ -51,6 +51,8 @@ with open('data/trapped/frequencies.csv', 'a', newline='') as csvfile:
         writer.writerow([a, f_avg, df])
     elif sys.argv[2] == 'V0':
         writer.writerow([V0, f_avg, df])
+    elif sys.argv[2] == 'N':
+        writer.writerow([N, f_avg, df])
 
 if sys.argv[1] != 'y':
     exit()

@@ -21,5 +21,5 @@ plt.yscale('log')
 plt.tight_layout()
 
 
-plt.savefig('report/figures/norm.png', dpi=500)
+# plt.savefig('report/figures/norm.png', dpi=500)
 plt.show()

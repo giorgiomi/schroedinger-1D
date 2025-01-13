@@ -16,8 +16,8 @@ if 'a' in data:
     plt.title(f'Frequenza di oscillazione con $V_0=${V0}')
     plt.tight_layout()
 
-    plt.savefig('report/figures/freq_vs_a.png')
-else:
+    # plt.savefig('report/figures/freq_vs_a.png')
+elif 'V' in data:
     plt.figure()
     x = data['V']
     plt.errorbar(x, data['frequency'], yerr=data['error'], marker='o', linestyle='-', capsize=4)
@@ -26,6 +26,16 @@ else:
     plt.title(f'Frequenza di oscillazione con $a=${a}')
     plt.tight_layout()
 
-    plt.savefig('report/figures/freq_vs_V0.png', dpi=500)
+    # plt.savefig('report/figures/freq_vs_V0.png', dpi=500)
+elif 'N' in data:
+    plt.figure()
+    x = data['N']
+    plt.errorbar(x, data['frequency'], yerr=data['error'], marker='o', linestyle='-', capsize=4)
+    plt.xlabel('$N$')
+    plt.ylabel(r'$\nu$')
+    plt.title(f'Frequenza di oscillazione con $a=${a}')
+    plt.tight_layout()
+
+    # plt.savefig('report/figures/freq_vs_V0.png', dpi=500)
 
 plt.show()

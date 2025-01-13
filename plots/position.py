@@ -29,5 +29,5 @@ plt.tight_layout()
 # plt.plot(t, x2_EU - x_EU**2, label='var')
 # plt.legend()
 
-plt.savefig('report/figures/pos.png', dpi=500)
+# plt.savefig('report/figures/pos.png', dpi=500)
 plt.show()

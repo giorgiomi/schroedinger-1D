@@ -1,3 +1,4 @@
+// SOLVES THE 1-D SCHROEDINGER EQUATION FOR A FINITE BOX AND A DOUBLE WELL POTENTIAL
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
@@ -10,24 +11,22 @@ double potential(double x, double V0, double a) {
 }
 
 int main(int argc, char** argv) {
+    if (argc != 5) {
+        fprintf(stderr, "Usage: %s <N> <dt> <V0> <A>\n", argv[0]);
+        return 1;
+    }
+
     // parameters
-    int N = 199;                                    // number of grid separations
+    int N = atoi(argv[1]);                          // number of grid separations
     int M = 1.5e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = 1e-4;                               // time interval
+    double dt = atof(argv[2]);                      // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
-    double V0;                                      // potential strength
-    double A;                                       // double well separation parameter
-    int n_print = 1;                               // print on file every n_print iteration
-
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s <V0> <A>\n", argv[0]);
-        return 1;
-    }
-    V0 = atof(argv[1]);
-    A = atof(argv[2]);
+    double V0 = atof(argv[3]);                      // potential strength
+    double A = atof(argv[4]);                       // double well separation parameter
+    int n_print = 1;                                // print on file every n_print iteration
 
     // printf("==================================================================================\n");    
     // printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);

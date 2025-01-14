@@ -25,8 +25,8 @@ int main(int argc, char** argv) {
     int M = 5.0e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = atof(argv[2]);                      // time interval
-    // double dt = dx * dx;                            // time interval to keep same eta
+    // double dt = atof(argv[2]);                      // time interval
+    double dt = dx * dx;                            // time interval to keep same eta
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
     // printf("eta = %.2f + %.2fi\n", creal(eta), cimag(eta));
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
     // initial condition
     double complex psi[N];
     // int i_start = (int)((L - sqrt(A)) / dx) - 1;
-    // psi[i_start] = 1.0 / sqrt(dx);
+    // psi[i_start] = 1.0;
     // for (int i = 0; i < N; i++) {
     //     if (i != i_start) {
     //         psi[i] = 0.0;
@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
     // trying another initial condition
     double sigma = 1.0 * sqrt(dx);
-    // double sigma = dx;
+    // double sigma = 0.001 / dx;
     for (int i = 0; i < N; i++) {
         double x = - L + (i + 1) * dx;
         psi[i] = wf(x, -sqrt(A),  pow(1/(2*M_PI*sigma*sigma), 0.25), sigma, 0.0);

@@ -87,5 +87,5 @@ plt.yticks([i * 0.1 for i in range(11)])  # Set y ticks to 0.1 intervals
 plt.tight_layout()
 
 
-plt.savefig(f'report/figures/gauss_prob.png', dpi=500)
+# plt.savefig(f'report/figures/gauss_prob.png', dpi=500)
 plt.show()

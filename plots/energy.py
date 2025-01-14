@@ -24,5 +24,5 @@ plt.ylabel('E')
 plt.legend()
 plt.tight_layout()
 
-plt.savefig('report/figures/gauss_energy.png', dpi=500)
+# plt.savefig('report/figures/gauss_energy.png', dpi=500)
 plt.show()

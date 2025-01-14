@@ -61,7 +61,7 @@ con
     0 & 0 & 0 & \eta & 1-2\eta + \Delta\tau V_N 
     \end{pmatrix}\, . 
 \end{equation*}
-La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore. Inoltre, scrivendo $A = \mathbb{1} + i\Delta t H$, si ottiene direttamente la matrice Hamiltioniana, che è indipendente dal passo temporale $\Delta t$.
+La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della moltiplicazione matrice per vettore. Inoltre, scrivendo $A = \mathbb{1} - i\Delta t H$, si ottiene direttamente la matrice Hamiltioniana, che è indipendente dal passo temporale $\Delta t$.
 
 \subsection{Metodo di Crank-Nicolson}
 Il metodo di Crank-Nicolson combina mezzo passo del metodo di Eulero esplicito con mezzo passo del metodo implicito. Utilizzando la matrice $H$ appena calcolata, il passo esplicito da fare è \footnote{Mentre la notazione $\bm{\psi}_k$ corrisponde a $\bm{\psi}(t)$, la notazione $\bm{\psi}_{k+1/2}$ corrisponde a $\bm{\psi}(t+\Delta t/2)$}
@@ -122,6 +122,21 @@ e poi ricorsivamente $U\mathbf{x} = \mathbf{y}$:
     x_N = \frac{y_N}{\alpha_N} \qquad x_i = \frac{y_i}{\alpha_i} - \frac{x_{i+1}\gamma_i}{\alpha_i} \qquad i = N-1,\dots,0\, .
     \label{eq:recB}
 \end{equation}
+
+\subsection{Metodo di Trotter-Suzuki}
+Questo metodo prevede di trattare l'evoluzione temporale scrivendo la soluzione esatta
+\begin{equation*}
+    \bm{\psi}_{k+1} = \exp(-i\Delta t H)\bm{\psi}_k\, ,
+\end{equation*}
+di cui equazione \eqref{eq:evol_mat} è un'approssimazione al primo ordine in $\Delta t$. Per poter applicare l'esponenziale alla funzione d'onda, si usa l'approssimazione di Trotter-Suzuki:
+\begin{equation*}
+    \exp(-i \Delta t H) = \exp\left(-i \frac{\Delta t}{2} V\right) \exp(-i \Delta t T) \exp\left(-i \frac{\Delta t}{2} V\right) + \mathcal{O}(\Delta t^3)\, .
+\end{equation*}
+
+
+
+
+
 
 \section{Simulazione di particella libera}
 Il caso in cui $V(x) = 0$ è quello di particella libera. Al fine di normalizzare la funzione d'onda, si usa come condizione iniziale
@@ -272,23 +287,30 @@ Si decide quindi di prendere $\sigma = \sqrt{\Delta x}$.
 
 Si mostrano i risultati di una simulazione con $N = 199$, $\Delta t = \num{1e-3}$, $V_0 = 100$, $a = 0.25$. In figura \ref{fig:gauss_prob}, si mostrano le oscillazioni di probabilità: rispetto alla simulazione precedente, l'ampiezza è aumentata, ciò significa che ci sono degli istanti periodici in cui la particella è quasi totalmente localizzabile in una delle due buche. Per verificare ulteriormente la correttezza della simulazione, in figura \ref{fig:gauss_energy} si mostrano i valori di aspettazione dell'energia del sistema in funzione del tempo. Sono calcolati nel seguente modo:
 \begin{align*}
-    &\langle K \rangle = \langle \psi(x,t) | K | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) \left(-\frac{1}{2}\pdv[2]{x}\right)\psi(x,t) \dd x\, , \\
+    &\langle T \rangle = \langle \psi(x,t) | T | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) \left(-\frac{1}{2}\pdv[2]{x}\right)\psi(x,t) \dd x\, , \\
     &\langle V \rangle = \langle \psi(x,t) | V | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) V(x) \psi(x,t) \dd x = \int_{-L}^{L} V(x) |\psi(x,t)|^2 \dd x\, .
 \end{align*}
-In figura si nota che l'energia, entro un piccolo scarto, è conservata nel tempo.
+In figura si nota che l'energia totale $\langle H \rangle = \langle T \rangle  + \langle V \rangle$, entro un piccolo scarto, è conservata nel tempo.
+Si riscontra, tuttavia, che l'energia totale dipende dal numero $N$ di divisioni spaziali e quindi dal passo $\Delta x$. Questo è probabilmente imputabile al calcolo dell'energia cinetica con le differenze finite, siccome al denominatore appare il termine $\Delta x^2$ e la dipendenza sembra essere proprio $E \sim N^2$ ad una prima analisi qualitativa. 
+
+Ciò rende difficile il controllo sulla stabilità al variare di $N$, anche se qualitiativamente la forma delle oscillazioni di probabilità rimane la stessa. La stabilità con passi temporali diversi è invece verificata, a patto di non scegliere $\Delta t \gtrsim 10^{-2}$: un passo troppo grande invalida l'evoluzione temporale del sistema.
+
+\subsection{Trotter-Suzuki}
+
 
 
 
 \section{Conclusioni}
-In questo progetto si è studiata l'equazione di Schrödinger in una dimensione utilizzando due metodi numerici: il metodo di Eulero esplicito e il metodo di Crank-Nicolson. Entrambi i metodi sono stati implementati e i loro risultati confrontati attraverso simulazioni di una particella libera e di una particella in un potenziale a doppia buca.
+In questo progetto, è stata studiata l'equazione di Schrödinger in una dimensione utilizzando due metodi numerici: il metodo di Eulero esplicito e il metodo di Crank-Nicolson. Entrambi i metodi sono stati implementati e i risultati delle simulazioni sono stati confrontati per il caso di particella libera e per il caso di potenziale a doppia buca.
 
-Le simulazioni hanno mostrato che il metodo di Eulero esplicito non conserva la normalizzazione della funzione d'onda, portando a risultati non fisici. Al contrario, il metodo di Crank-Nicolson ha dimostrato di essere stabile e di conservare la normalizzazione, rendendolo più adatto per questo tipo di problemi.
+I risultati mostrano che il metodo di Eulero esplicito non conserva la normalizzazione della funzione d'onda, rendendolo inadatto per simulazioni a lungo termine. Al contrario, il metodo di Crank-Nicolson conserva la normalizzazione e fornisce risultati fisicamente corretti, anche se richiede una maggiore complessità computazionale.
 
-Nel caso della particella libera, si è verificato che il valor medio della posizione rimane nullo e la deviazione standard cresce linearmente nel tempo, come previsto teoricamente. Questo conferma la corretta implementazione del metodo di Crank-Nicolson.
+Nel caso del potenziale a doppia buca, è stato osservato che la particella oscilla tra le due buche con una frequenza che dipende dai parametri del potenziale. Tuttavia, la stima della frequenza di oscillazione è risultata difficile a causa delle incertezze nei dati.
 
-Per il potenziale a doppia buca, si è osservato che la particella oscilla tra le due buche quando il potenziale è basso, mentre rimane parzialmente confinata nella buca di partenza quando il potenziale è alto. Si è anche studiata la frequenza di oscillazione della particella in funzione dei parametri del potenziale, trovando che la frequenza è dominata dall'incertezza e non mostra un andamento chiaro.
+Infine, la simulazione è stata migliorata utilizzando un pacchetto gaussiano come condizione iniziale, ottenendo risultati più stabili e fisicamente accurati. La conservazione dell'energia totale del sistema è stata verificata entro un piccolo scarto.
 
-Il metodo di Crank-Nicolson si è perciò rivelato efficace per la simulazione dell'equazione di Schrödinger in una dimensione, permettendo di studiare il comportamento di una particella in diversi potenziali. Tuttavia, ulteriori studi sono necessari per comprendere meglio l'andamento della frequenza di oscillazione nel caso del potenziale a doppia buca.
+In conclusione, il metodo di Crank-Nicolson si è dimostrato più affidabile per la simulazione dell'equazione di Schrödinger, specialmente quando si utilizzano condizioni iniziali più realistiche come il pacchetto gaussiano.
+
 
 
 \pagebreak

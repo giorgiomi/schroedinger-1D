@@ -21,9 +21,11 @@ int main(int argc, char** argv) {
     int M = 1.5e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = atof(argv[2]);                      // time interval
+    // double dt = atof(argv[2]);                      // time interval
+    double dt = dx * dx;                            // time interval to keep same eta
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
+    // printf("eta = %.2f + %.2fi\n", creal(eta), cimag(eta));
     double V0 = atof(argv[3]);                      // potential strength
     double A = atof(argv[4]);                       // double well separation parameter
     int n_print = 1;                                // print on file every n_print iteration
@@ -34,6 +36,9 @@ int main(int argc, char** argv) {
     // files
     FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
     printHeaderOnFile(f_psi, N, 0);
+
+    FILE* f_energy = fopen("data/trapped/energy.csv", "w");
+    fprintf(f_energy, "t,K,V,E\n");
 
     FILE* f_param = fopen("data/trapped/param.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt,V0,a\n");
@@ -90,6 +95,7 @@ int main(int argc, char** argv) {
     int i_start = (int)((L - sqrt(A)) / dx) - 1;
     // printf("i_start = %d", i_start);
     psi[i_start] = 1.0 / sqrt(dx);
+    // psi[i_start] = 10.0 * sqrt(dx);
     for (int i = 0; i < N; i++) {
         if (i != i_start) {
             psi[i] = 0.0;
@@ -107,12 +113,23 @@ int main(int argc, char** argv) {
         // printing on file every n_print iterations 
         if (k % n_print == 0) {
             double psi_norm[N];
+            double potential_energy[N];
+            double kinetic_energy[N];
+            kinetic_energy[0] = conj(psi[0]) * (- (psi[1] - 2 * psi[0]) / (2 * dx * dx));
+            kinetic_energy[N-1] = conj(psi[N-1]) * (- (psi[N-2] - 2 * psi[0]) / (2 * dx * dx)); 
             for (int i = 0; i < N; i++) {
                 psi_norm[i] = psi[i] * conj(psi[i]);
+                potential_energy[i] = V[i] * psi_norm[i];
+                if (i != 0 && i != N-1) {
+                    kinetic_energy[i] = conj(psi[i]) * (- (psi[i+1] - 2 * psi[i] + psi[i-1]) / (2 * dx * dx));
+                }
             }
+            double V_avg = normSquared(N, potential_energy, dx);
+            double K_avg = normSquared(N, kinetic_energy, dx);
             double prob_left = normSquaredLeft(N, psi_norm, dx);
             double prob_right = normSquaredRight(N, psi_norm, dx);
             printLineOnFile(f_psi, N, k*dt, NULL, 1.0, prob_left, prob_right);
+            printLineOnFile(f_energy, N, k*dt, NULL, K_avg, V_avg, K_avg + V_avg);
         }
     }
 

@@ -84,18 +84,79 @@ void crankNicolsonStep(int N, double complex **A_half, double complex *psi, doub
     return;
 }
 
-void trotterSuzukiStep(int N, double *V, double dt, double complex *psi, double complex eta) {
+void trotterSuzukiStep(int N, double *V, double dt, double dx, double complex *psi, double complex eta) {
     double complex exp_V[N];
     for (int i = 0; i < N; i++) {
-        exp_V[i] = cexp(I * V[i] * dt/2);
+        exp_V[i] = cexp(-I * V[i] * dt/2);
         psi[i] *= exp_V[i];
     }
 
+    double P[N][N]; // base change matrix
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            P[i][j] = sin((i + 1) * (j + 1) * M_PI / (N + 1));
+        }
+    }
 
+    double norm; // normalize eigenvectors
+    for (int j = 0; j < N; j++) {
+        norm = 0;
+        for (int i = 0; i < N; i++) {
+            norm += P[i][j];
+        }
+        for (int i = 0; i < N; i++) {
+            P[i][j] /= norm;
+        }
+    }
+
+    double P_inv[N][N];
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            P_inv[i][j] = P[j][i];
+        }
+    }
+
+    double complex expD[N][N];
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i == j) {
+                expD[i][j] = cexp(-I * dt * (1 - cos((i + 1) * M_PI / (N + 1))) / (dx*dx));
+            } else {
+                expD[i][j] = 0.0;
+            }
+        }
+    }
+
+    double complex temp[N][N];
+    double complex expT[N][N];
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            temp[i][j] = 0.0;
+            for (int k = 0; k < N; k++) {
+                temp[i][j] += expD[i][k] * P[k][j];
+            }
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            expT[i][j] = 0.0;
+            for (int k = 0; k < N; k++) {
+                expT[i][j] += P_inv[i][k] * expD[k][j];
+            }
+        }
+    }
+
+    double complex psi_inter[N];
+    for (int i = 0; i < N; i++) {
+        psi_inter[i] = 0.0;
+        for (int j = 0; j < N; j++) {
+            psi_inter[i] += expT[i][j] * psi[j];
+        }
+    }
 
 
     for (int i = 0; i < N; i++) {
-        psi[i] *= exp_V[i];
+        psi[i] = psi_inter[i] * exp_V[i];
     }
 
 }

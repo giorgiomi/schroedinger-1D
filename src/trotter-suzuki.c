@@ -11,7 +11,7 @@ double potential(double x, double V0, double a) {
 
 int main(int argc, char** argv) {
     // parameters
-    int N = 199;                                    // number of grid separations
+    int N = 49;                                    // number of grid separations
     int M = 4.0e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
@@ -33,10 +33,10 @@ int main(int argc, char** argv) {
     // printf("Running T-S with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
 
     // files
-    FILE* f_psi = fopen("data/trapped/T-S.csv", "w");
-    printHeaderOnFile(f_psi, N, 0);
+    FILE* f_psi = fopen("data/test/T-S.csv", "w");
+    printHeaderOnFile(f_psi, N, 1);
 
-    FILE* f_param = fopen("data/trapped/paramT-S.csv", "w");
+    FILE* f_param = fopen("data/test/paramT-S.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt,V0,a\n");
     fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f,%.10f,%.10f\n", N, M, L, dx, dt, V0, A);
 
@@ -46,8 +46,6 @@ int main(int argc, char** argv) {
         V[i] = potential(-L + (i + 1) * dx, V0, A);
         // printf("V[%d] = %.4f\n", i, V[i]);
     }
-
-    // T-S stuff
     
     // initial condition
     double complex psi[N];
@@ -66,7 +64,7 @@ int main(int argc, char** argv) {
         // fflush(stdout);
 
         // evolution step in one line
-        // trotterSuzukiStep();
+        trotterSuzukiStep(N, V, dt, dx, psi, eta);
         
         // printing on file every n_print iterations 
         if (k % n_print == 0) {
@@ -76,7 +74,7 @@ int main(int argc, char** argv) {
             }
             double prob_left = normSquaredLeft(N, psi_norm, dx);
             double prob_right = normSquaredRight(N, psi_norm, dx);
-            printLineOnFile(f_psi, N, k*dt, NULL, 1.0, prob_left, prob_right);
+            printLineOnFile(f_psi, N, k*dt, psi, 1.0, prob_left, prob_right);
         }
     }
 

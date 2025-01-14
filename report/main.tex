@@ -132,10 +132,17 @@ di cui equazione \eqref{eq:evol_mat} è un'approssimazione al primo ordine in $\
 \begin{equation*}
     \exp(-i \Delta t H) = \exp\left(-i \frac{\Delta t}{2} V\right) \exp(-i \Delta t T) \exp\left(-i \frac{\Delta t}{2} V\right) + \mathcal{O}(\Delta t^3)\, .
 \end{equation*}
-
-
-
-
+Siccome $V = \text{diag}(V_1,\dots,V_N)$, è facile calcolarne l'esponenziale, che sarà
+\[
+    \exp(-i\frac{\Delta t}{2} V) = \text{diag}\left(\exp(-i\frac{\Delta t}{2} V_1),\dots,\exp(-i\frac{\Delta t}{2} V_N)\right)\, .
+\]
+La matrice $T$ non è diagonale, bensì tridiagonale. Inoltre gli elementi sulla diagonale principale sono uguali e corrispondono ad $a_i = 1/\Delta x^2$. Anche gli elementi sulle altre diagonali sono uguali, e sono $c_i = e_i = -1/2\Delta x^2$. Si tratta di una matrice di Töplitz, i cui autovalori e autovettori sono facili da calcolare, e sono, in questo caso:
+\[
+    \lambda_n = \frac{1}{\Delta x^2} \left[1 -\cos\left(\frac{n\pi}{N+1}\right)\right]\, ,
+    \qquad
+    (v_n)_k = \sin\left(\frac{nk\pi}{N+1}\right)\, .
+\]
+Una volta diagonalizzata la matrice $T = P^{-1}DP$, dove $P$ è la matrice di cambio di base e $D$ è la matrice diagonale, se ne può calcolare l'esponenziale $\exp(-i\Delta t T) = P^{-1}\exp(-i\Delta t D)P$.
 
 
 \section{Simulazione di particella libera}

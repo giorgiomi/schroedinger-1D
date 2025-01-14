@@ -65,6 +65,6 @@ void crankNicolsonStep(int N, double complex **A_half, double complex *psi, doub
 /*
 Executes a T-S step
 */
-void trotterSuzukiStep(int N, double *V, double dt, double complex *psi, double complex eta);
+void trotterSuzukiStep(int N, double *V, double dt, double dx, double complex *psi, double complex eta);
 
 #endif

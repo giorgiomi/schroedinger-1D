@@ -124,7 +124,7 @@ e poi ricorsivamente $U\mathbf{x} = \mathbf{y}$:
 \end{equation}
 
 \section{Simulazione di particella libera}
-Il caso in cui $V(x) = 0$ è quello di particella libera. Si usa come condizione iniziale
+Il caso in cui $V(x) = 0$ è quello di particella libera. Al fine di normalizzare la funzione d'onda, si usa come condizione iniziale
 \begin{equation}
     \psi(x = 0, 0) = \frac{1}{\sqrt{\Delta x}}\, ,
     \qquad
@@ -170,6 +170,8 @@ Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come
 \section{Simulazione con potenziale a doppia buca}
 
 Ora viene simulato il sistema con potenziale $V(x) = V_0(x^2-a)^2$. In generale, i due minimi del potenziale si trovano a $x_{1,2} = \pm \sqrt{a}$, quindi come condizione iniziale si può prendere la stessa di equazione \eqref{eq:initial} ma con la funzione d'onda in $x_1 = -\sqrt{a}$ (la buca di sinistra). 
+
+\subsection{Frequenza di oscillazione}
 
 È di particolare interesse calcolare la probabilità di misurare la particella in ciascuna delle due buche in funzione del tempo, e si può fare semplicemente così:
 \[
@@ -242,6 +244,40 @@ Studiare la frequenza di oscillazione del moto non è semplice. Quando il potenz
     \end{minipage}
 \end{figure}
 I risulati, mostrati in figura \ref{fig:freq_vs_a} al variare di $a$ e in figura \ref{fig:freq_vs_V0} al variare di $V_0$, mostrano una bassa variazione della frequenza di oscillazione. Tuttavia, si nota immediatamente che i dati sono dominati dall'incertezza ed è difficile stabilire un andamento anche solo qualitativo della frequenza.
+
+\subsection{Pacchetto gaussiano}
+Per provare a migliorare i risultati della simulazione, si può provare ad implementare una diversa condizione iniziale. Il problema della funzione d'onda di equazione \eqref{eq:initial} è la discontinuità. Infatti, sebbene l'evoluzione con il metodo di Crank-Nicolson fornisca risultati fisici (la normalizzazione è conservata), la simulazione è molto influenzata dal passo spaziale $\Delta x$. Si decide dunque di utilizzare all'istante iniziale un pacchetto gaussiano del tipo:
+\begin{equation*}
+    \psi(x, 0) = \left(\frac{1}{2\pi\sigma^2}\right)^{1/4}\exp{-\frac{(x-x_1)^2}{4\sigma^2}}\, .
+\end{equation*}
+Si noti che questa scelta fa sì che $\int_{-\infty}^{+\infty} |\psi(x,0)|^2 \dd x = 1$ e, in generale, la funzione d'onda è non nulla anche al di fuori della scatola. Tuttavia, si può prendere una larghezza piccola della funzione gaussiana, corrispondente ad un pacchetto ben localizzato attorno a $x = x_1$, e i contributi esterni alla scatola diventano trascurabili.\footnote{Il problema persiste se si prende $a \to 1$ e quindi $x_1 \to -1$. In questo caso il pacchetto gaussiano non è normalizzato.} 
+Si decide quindi di prendere $\sigma = \sqrt{\Delta x}$.
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/gauss_prob.png}
+        \caption{Oscillazioni di probabilità nella simulazione con pacchetto gaussiano come condizione iniziale. Le oscillazioni sono più ampie e la particella si muove effettivamente tra le due buche.}
+        \label{fig:gauss_prob}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/gauss_energy.png}
+        \caption{Energia del sistema nella simulazione con pacchetto gaussiano come condizione iniziale. Entro un piccolo scarto, l'energia totale è conservata.}
+        \label{fig:gauss_energy}
+        % \hspace{\linewidth}
+    \end{minipage}
+\end{figure}
+
+Si mostrano i risultati di una simulazione con $N = 199$, $\Delta t = \num{1e-3}$, $V_0 = 100$, $a = 0.25$. In figura \ref{fig:gauss_prob}, si mostrano le oscillazioni di probabilità: rispetto alla simulazione precedente, l'ampiezza è aumentata, ciò significa che ci sono degli istanti periodici in cui la particella è quasi totalmente localizzabile in una delle due buche. Per verificare ulteriormente la correttezza della simulazione, in figura \ref{fig:gauss_energy} si mostrano i valori di aspettazione dell'energia del sistema in funzione del tempo. Sono calcolati nel seguente modo:
+\begin{align*}
+    &\langle K \rangle = \langle \psi(x,t) | K | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) \left(-\frac{1}{2}\pdv[2]{x}\right)\psi(x,t) \dd x\, , \\
+    &\langle V \rangle = \langle \psi(x,t) | V | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) V(x) \psi(x,t) \dd x = \int_{-L}^{L} V(x) |\psi(x,t)|^2 \dd x\, .
+\end{align*}
+In figura si nota che l'energia, entro un piccolo scarto, è conservata nel tempo.
+
+
 
 \section{Conclusioni}
 In questo progetto si è studiata l'equazione di Schrödinger in una dimensione utilizzando due metodi numerici: il metodo di Eulero esplicito e il metodo di Crank-Nicolson. Entrambi i metodi sono stati implementati e i loro risultati confrontati attraverso simulazioni di una particella libera e di una particella in un potenziale a doppia buca.

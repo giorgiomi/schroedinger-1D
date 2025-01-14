@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
     // parameters
     int N = atoi(argv[1]);                          // number of grid separations
-    int M = 1.5e3;                                  // number of time steps
+    int M = 5.0e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
     double dt = atof(argv[2]);                      // time interval
@@ -106,10 +106,12 @@ int main(int argc, char** argv) {
 
     // trying another initial condition
     double sigma = 1.0 * sqrt(dx);
+    // double sigma = dx;
     for (int i = 0; i < N; i++) {
         double x = - L + (i + 1) * dx;
-        psi[i] = wf(x, -sqrt(A),  sqrt(1.0/(sigma * sqrt(2 * M_PI))), sigma, 0.0);
+        psi[i] = wf(x, -sqrt(A),  pow(1/(2*M_PI*sigma*sigma), 0.25), sigma, 0.0);
     }
+    printLineOnFile(f_psi, N, 0.0, psi, 1.0, 1.0, 0.0);
 
     // simulation
     for (int k = 0; k < M; k++) {

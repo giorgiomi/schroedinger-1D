@@ -18,6 +18,8 @@ psi_real = np.hstack([np.zeros((psi_real.shape[0], 1)), psi_real, np.zeros((psi_
 psi_imag = np.hstack([np.zeros((psi_imag.shape[0], 1)), psi_imag, np.zeros((psi_imag.shape[0], 1))])
 x = np.arange(psi_real.shape[1])*dx - L
 
+
+## 2D PLOT
 fig, ax = plt.subplots()
 line_real, = ax.plot(x, psi_real[0, :], label=r'$Re(\psi)$')
 line_imag, = ax.plot(x, psi_imag[0, :], label=r'$Im(\psi)$')
@@ -34,16 +36,19 @@ def update(frame):
     time_text.set_text(f'Time = {time[frame]:.4f}')
     return line_real, line_imag, line_norm, time_text
 
-ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=10)
+ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=17)
 
 plt.xlabel('x')
 plt.ylabel('Psi')
-plt.title(f'motion plot N = {N}, L = {L}, dt = {dt:.2e}')
+plt.title(f'N = {N}, dt = {dt:.2e}, V_0 = {V0}, a = {a}')
 plt.ylim(-2, 2) 
 plt.show()
 
+# ani.save(f'data/animations/motion_{N}_{dt:.3f}_{V0}_{a}.mp4', writer='pillow', dpi=300)
+
 exit()
 
+## 3D PLOT
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 

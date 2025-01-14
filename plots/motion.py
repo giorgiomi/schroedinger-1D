@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from functions import getParam
+from mpl_toolkits.mplot3d import Axes3D
 
 data = pd.read_csv("data/trapped/C-N.csv")
 N, M, L, dx, dt, V0, a = getParam("data/trapped/param.csv")
@@ -33,9 +34,31 @@ def update(frame):
     time_text.set_text(f'Time = {time[frame]:.4f}')
     return line_real, line_imag, line_norm, time_text
 
-ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=100)
+ani = FuncAnimation(fig, update, frames=len(time), blit=True, interval=10)
+
 plt.xlabel('x')
 plt.ylabel('Psi')
 plt.title(f'motion plot N = {N}, L = {L}, dt = {dt:.2e}')
-plt.ylim(-10, 10) 
+plt.ylim(-2, 2) 
+plt.show()
+
+exit()
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+def update(frame):
+    ax.clear()
+    ax.plot(x, psi_real[frame, :], zs=psi_imag[frame, :], zdir='z', label=r'$Re(\psi)$')
+    ax.plot(x, psi_imag[frame, :], zs=psi_real[frame, :], zdir='y', label=r'$Im(\psi)$')
+    ax.set_xlabel('x')
+    ax.set_ylabel(r'Re($\psi$)')
+    ax.set_zlabel(r'Im($\psi$)')
+    ax.set_title(f'motion plot N = {N}, L = {L}, dt = {dt:.2e}')
+    ax.set_zlim(-10, 10)
+    ax.set_ylim(-10, 10)
+    ax.legend()
+    return ax
+
+ani = FuncAnimation(fig, update, frames=len(time), blit=False, interval=50)
 plt.show()

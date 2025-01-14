@@ -10,6 +10,10 @@ double potential(double x, double V0, double a) {
     // return 0.0;
 }
 
+double complex wf(double x, double x0, double A, double sigma, double k) {
+    return A * exp(-(x - x0) * (x - x0)/(4*sigma*sigma))*cexp(I * k * x);
+}
+
 int main(int argc, char** argv) {
     if (argc != 5) {
         fprintf(stderr, "Usage: %s <N> <dt> <V0> <A>\n", argv[0]);
@@ -21,8 +25,8 @@ int main(int argc, char** argv) {
     int M = 1.5e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    // double dt = atof(argv[2]);                      // time interval
-    double dt = dx * dx;                            // time interval to keep same eta
+    double dt = atof(argv[2]);                      // time interval
+    // double dt = dx * dx;                            // time interval to keep same eta
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
     // printf("eta = %.2f + %.2fi\n", creal(eta), cimag(eta));
@@ -35,7 +39,7 @@ int main(int argc, char** argv) {
 
     // files
     FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
-    printHeaderOnFile(f_psi, N, 0);
+    printHeaderOnFile(f_psi, N, 1);
 
     FILE* f_energy = fopen("data/trapped/energy.csv", "w");
     fprintf(f_energy, "t,K,V,E\n");
@@ -92,14 +96,19 @@ int main(int argc, char** argv) {
     
     // initial condition
     double complex psi[N];
-    int i_start = (int)((L - sqrt(A)) / dx) - 1;
-    // printf("i_start = %d", i_start);
-    psi[i_start] = 1.0 / sqrt(dx);
-    // psi[i_start] = 10.0 * sqrt(dx);
+    // int i_start = (int)((L - sqrt(A)) / dx) - 1;
+    // psi[i_start] = 1.0 / sqrt(dx);
+    // for (int i = 0; i < N; i++) {
+    //     if (i != i_start) {
+    //         psi[i] = 0.0;
+    //     }
+    // }
+
+    // trying another initial condition
+    double sigma = 1.0 * sqrt(dx);
     for (int i = 0; i < N; i++) {
-        if (i != i_start) {
-            psi[i] = 0.0;
-        }
+        double x = - L + (i + 1) * dx;
+        psi[i] = wf(x, -sqrt(A),  sqrt(1.0/(sigma * sqrt(2 * M_PI))), sigma, 0.0);
     }
 
     // simulation
@@ -128,7 +137,7 @@ int main(int argc, char** argv) {
             double K_avg = normSquared(N, kinetic_energy, dx);
             double prob_left = normSquaredLeft(N, psi_norm, dx);
             double prob_right = normSquaredRight(N, psi_norm, dx);
-            printLineOnFile(f_psi, N, k*dt, NULL, 1.0, prob_left, prob_right);
+            printLineOnFile(f_psi, N, k*dt, psi, 1.0, prob_left, prob_right);
             printLineOnFile(f_energy, N, k*dt, NULL, K_avg, V_avg, K_avg + V_avg);
         }
     }

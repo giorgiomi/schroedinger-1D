@@ -63,14 +63,14 @@ plt.plot(t, prob_left, label='$P_L$')
 plt.plot(t, prob_right, label='$P_R$')
 plt.plot(t, prob_right + prob_left, label='$P_L + P_R$')
 
-# if time_differences:
-#     for i, (time, diff) in enumerate(zip(intersection_times, time_differences)):
-#         if diff > time_differences[0] / 2:
-#             plt.annotate('', xy=(time, 0.5), xytext=(time, 0.8),
-#                          arrowprops=dict(facecolor='black', edgecolor='none', shrink=0.05, width=1, headwidth=5),
-#                          label='Intersections' if i == 0 else "")
-#     plt.annotate('', xy=(intersection_times[i] + time_differences[-1], 0.5), xytext=(intersection_times[i] + time_differences[-1], 0.8),
-#                  arrowprops=dict(facecolor='black', edgecolor='none', shrink=0.05, width=1, headwidth=5))
+if time_differences:
+    for i, (time, diff) in enumerate(zip(intersection_times, time_differences)):
+        if diff > time_differences[0] / 2:
+            plt.annotate('', xy=(time, 0.5), xytext=(time, 0.8),
+                         arrowprops=dict(facecolor='black', edgecolor='none', shrink=0.05, width=1, headwidth=5),
+                         label='Intersections' if i == 0 else "")
+    plt.annotate('', xy=(intersection_times[i] + time_differences[-1], 0.5), xytext=(intersection_times[i] + time_differences[-1], 0.8),
+                 arrowprops=dict(facecolor='black', edgecolor='none', shrink=0.05, width=1, headwidth=5))
 
 plt.axhline(0.5, color='tab:red')
 # Add a box with the parameters V0 and a

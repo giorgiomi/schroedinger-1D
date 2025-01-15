@@ -17,10 +17,10 @@ Per semplicità, si sono posti $\hbar = m = 1$. Si è interessati alla regione $
 
 \subsection{Metodo di Eulero esplicito}
 Il primo approccio è quello di utilizzare il metodo di Eulero esplicito. 
-Per prima cosa, si usano le differenze finite per stimare le derivate della funzione d'onda che compaiono in \eqref{eq:sch}. Siano $x = x_0 + \Delta x$ e $t = t_0 + \Delta t$, si ottiene:
+Per prima cosa, si usano le differenze finite per stimare le derivate della funzione d'onda che compaiono in \eqref{eq:sch}. Valutando le derivate in $(x_0, t_0)$, si ottiene:
 \begin{align*}
-    &\pdv{\psi(x, t)}{t} = \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} + \mathcal{O}(\Delta t)\, , \\
-    &\pdv[2]{\psi(x, t)}{x} = \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t)}{\Delta x^2} + \mathcal{O}(\Delta x^2)\, .
+    &\left.\pdv{\psi(x, t)}{t}\right\vert_{(x_0, t_0)} = \frac{\psi(x_0, t_0 + \Delta t) - \psi(x_0, t_0)}{\Delta t} + \mathcal{O}(\Delta t)\, , \\
+    &\left.\pdv[2]{\psi(x, t)}{x}\right\vert_{(x_0, t_0)} = \frac{\psi(x_0 + \Delta x, t_0) - 2\psi(x_0, t_0) + \psi(x_0 - \Delta x, t)}{\Delta x^2} + \mathcal{O}(\Delta x^2)\, .
 \end{align*}
 L'equazione di Schrödinger diventa quindi:
 \begin{equation*}
@@ -46,7 +46,7 @@ dove $\Delta\tau = -i\Delta t$ e $\eta = - \Delta\tau/2\Delta x^2$. L'equazione 
 \begin{equation*}
     \bm{\psi}_k = (\psi_1^k,\psi_2^k,\dots,\psi_N^k)^T
 \end{equation*}
-e l'equazione \eqref{eq:evol} diventa
+e l'equazione diventa
 \begin{equation}
     \bm{\psi}_{k+1} = A\bm{\psi}_k
     \label{eq:evol_mat}
@@ -66,13 +66,13 @@ La matrice $A$ è tridiagonale: ciò semplifica molto la computazione della molt
 \subsection{Metodo di Crank-Nicolson}
 Il metodo di Crank-Nicolson combina mezzo passo del metodo di Eulero esplicito con mezzo passo del metodo implicito. Utilizzando la matrice $H$ appena calcolata, il passo esplicito da fare è \footnote{Mentre la notazione $\bm{\psi}_k$ corrisponde a $\bm{\psi}(t)$, la notazione $\bm{\psi}_{k+1/2}$ corrisponde a $\bm{\psi}(t+\Delta t/2)$}
 \begin{equation*}
-    \bm{\psi}_{k+1/2} = \left(\mathbb{1} + i\frac{\Delta t}{2} H\right)\bm{\psi}_k\, ,
+    \bm{\psi}_{k+1/2} = \left(\mathbb{1} - i\frac{\Delta t}{2} H\right)\bm{\psi}_k\, ,
 \end{equation*}
 seguito dal passo implicito, cioè
 \begin{equation*}
-    \left(\mathbb{1} - i\frac{\Delta t}{2} H\right)\bm{\psi}_{k+1} = \bm{\psi}_{k+1/2}\, .
+    \left(\mathbb{1} + i\frac{\Delta t}{2} H\right)\bm{\psi}_{k+1} = \bm{\psi}_{k+1/2}\, .
 \end{equation*}
-Per risolvere il passo implicito, sia $M = \left(\mathbb{1} - i\frac{\Delta t}{2} H\right)$. Come si è già visto, questa matrice è tridiagonale e può essere fattorizzata nel seguente modo:
+Per risolvere il passo implicito, sia $M = \left(\mathbb{1} + i\frac{\Delta t}{2} H\right)$. Come si è già visto, questa matrice è tridiagonale e può essere fattorizzata nel seguente modo:
 \begin{equation*} 
     M = 
     \begin{pmatrix}
@@ -200,7 +200,7 @@ Ora viene simulato il sistema con potenziale $V(x) = V_0(x^2-a)^2$. In generale,
     \qquad
     \mathcal{P}_R(t) = \int_0^L |\psi(x,t)|^2 \dd x\, .
 \]
-Prendendo $N$ dispari, bisogna decidere se inserire il contributo centrale in $\mathcal{P}_L$ o  $\mathcal{P}_R$, ma in ogni caso ciò non è rilevante ai risultati della simulazione. 
+Prendendo $N$ dispari, bisogna decidere se inserire il contributo centrale in $\mathcal{P}_L$ o  $\mathcal{P}_R$, ma in ogni caso ciò non è rilevante ai risultati della simulazione per $N$ abbastanza grande. 
 
 Per quanto riguarda i valori dei parametri $V_0$ e $a$, si può notare che $V(0) = V_0 a^2$, e questo stabilisce un ordine di grandezza per la doppia buca. Nel mezzo passo esplicito del metodo di Crank-Nicolson, la matrice di evoluzione temporale ha come valori della diagonale $1-\eta + \frac{\Delta\tau}{2} V_i$, e ciò suggerisce che l'ordine di grandezza del potenziale, per avere un contributo significativo, debba essere
 \begin{equation}

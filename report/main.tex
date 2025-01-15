@@ -136,7 +136,7 @@ Siccome $V = \text{diag}(V_1,\dots,V_N)$, è facile calcolarne l'esponenziale, c
 \[
     \exp(-i\frac{\Delta t}{2} V) = \text{diag}\left(\exp(-i\frac{\Delta t}{2} V_1),\dots,\exp(-i\frac{\Delta t}{2} V_N)\right)\, .
 \]
-La matrice $T$ non è diagonale, bensì tridiagonale. Inoltre gli elementi sulla diagonale principale sono uguali e corrispondono ad $a_i = 1/\Delta x^2$. Anche gli elementi sulle altre diagonali sono uguali, e sono $c_i = e_i = -1/2\Delta x^2$. Si tratta di una matrice di Töplitz, i cui autovalori e autovettori sono facili da calcolare, e sono, in questo caso:
+La matrice $T$ non è diagonale, bensì tridiagonale. Inoltre gli elementi sulla diagonale principale sono uguali e corrispondono ad $a_i = 1/\Delta x^2$. Anche gli elementi sulle altre diagonali sono uguali, e sono $c_i = e_i = -1/2\Delta x^2$. Si tratta perciò anche di una matrice di Töplitz, i cui autovalori e autovettori sono facili da calcolare, e sono, in questo caso:
 \[
     \lambda_n = \frac{1}{\Delta x^2} \left[1 -\cos\left(\frac{n\pi}{N+1}\right)\right]\, ,
     \qquad
@@ -165,10 +165,6 @@ Per studiare il comportamento di entrambi i metodi, si calcola ad ogni passo tem
 \[
     \mathcal{N}(t) = \int_{-L}^L |\psi(x,t)|^2 \dd{x}\, .
 \]
-Siccome la simulazione genera valori $\psi_i^k$ su uno spazio discreto, l'integrale si deve calcolare sommando i contributi di ogni divisione spaziale, ricordandosi che le condizioni al contorno annullano i contributi a $x = \pm L$.
-Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione e $\mathcal{N}(t)$ cresce esponenzialmente!\footnote{Questa è solo una stima visiva dal grafico.}
-Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come per le equazioni differenziali ordinarie, la convergenza non è garantita. 
-
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.47 \textwidth}
@@ -185,6 +181,9 @@ Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come
         \label{fig:pos}
     \end{minipage}
 \end{figure}
+Siccome la simulazione genera valori $\psi_i^k$ su uno spazio discreto, l'integrale si deve calcolare sommando i contributi di ogni divisione spaziale, ricordandosi che le condizioni al contorno annullano i contributi a $x = \pm L$.
+Naturalmente ci si aspetta di avere $\mathcal{N}(t) = 1$, ma come si può notare in figura \ref{fig:norm} il metodo di Eulero viola questa condizione e $\mathcal{N}(t)$ cresce esponenzialmente!\footnote{Questa è solo una stima visiva dal grafico.}
+Il problema risiede proprio nel fatto che il metodo è di tipo esplicito e, come per le equazioni differenziali ordinarie, la convergenza non è garantita. 
 
 È conveniente dunque affidarsi al metodo di Crank-Nicolson, del quale si verifica la corretta implementazione mostrando l'evoluzione temporale del valor medio $\langle x \rangle$ e della deviazione standard $\sigma_x = \sqrt{\langle x^2 \rangle - \langle x \rangle^2}$ in figura \ref{fig:pos}. Come ci si aspetta (si veda l'appendice \ref{sec:evol}), il valor medio della posizione $x$ è nullo e la deviazione standard cresce linearmente nel tempo, almeno fino al raggiungimento dei lati della scatola.
 
@@ -210,8 +209,6 @@ Per quanto riguarda i valori dei parametri $V_0$ e $a$, si può notare che $V(0)
     V_0 a^2 \sim \frac{1}{\Delta t}\, .
     \label{eq:extim}
 \end{equation}
-Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25$ produrrebbero un potenziale troppo debole. Si decide quindi di usare un passo $\Delta t = \num{1e-4}$ e poi andare a studiare il comportamento della simulazione per diversi valori di $V_0$ e $a$.
-% si usano $V_0 = \num{1e3}$ e $a = 0.25$.
 \begin{figure}[h!]
     \centering
     \begin{minipage}[t]{0.47 \textwidth}
@@ -228,7 +225,14 @@ Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25
         \label{fig:prob_osc}
     \end{minipage}
 \end{figure}
-\vspace{-0.5cm}
+Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25$ produrrebbero un potenziale troppo debole. Si decide quindi di usare un passo $\Delta t = \num{1e-4}$ e poi andare a studiare il comportamento della simulazione per diversi valori di $V_0$ e $a$.
+% si usano $V_0 = \num{1e3}$ e $a = 0.25$.
+Nelle figure \ref{fig:prob_null}, \ref{fig:prob_osc} e \ref{fig:prob_sep} si mostrano i risultati in tre esempi diversi:
+\begin{itemize}
+    \item Nel primo caso, $V_0 = 0$ e $a = 0$, quindi il potenziale è nullo e la particella libera si muove nella scatola. Partendo dal centro della scatola, non c'è oscillazione nella probabilità di misurarla a sinistra o destra ed entrambe valgono $\sim 0.5$.
+    \item Il secondo caso ha $V_0 a^2 = \num{2.5e2}$. Ora la particella oscilla tra le due buche, ma il potenziale è ancora troppo basso purché resti confinata in una delle due. Questo caso è molto simile a $V_0 = 0$, $a \neq 0$, siccome il potenziale è ancora trascurabile rispetto all'energia cinetica.
+    \item Nel terzo caso, $V_0 a^2 = \num{1.8e4}$. In accordo con la previsione di equazione \eqref{eq:extim}, a questo ordine di grandezza la particella risente del potenziale ed è quasi completamente confinata nella buca di partenza (sinistra).
+\end{itemize}
 \begin{figure}[h!]
     \centering
     \begin{minipage}{0.47 \textwidth}
@@ -242,12 +246,6 @@ Quindi tenendo il valore $\Delta t = \num{1e-6}$, i valori $V_0 = 1$ e $a = 0.25
         % \hspace{\linewidth}
     \end{minipage}
 \end{figure}
-Nelle figure \ref{fig:prob_null}, \ref{fig:prob_osc} e \ref{fig:prob_sep} si mostrano i risultati in tre esempi diversi:
-\begin{itemize}
-    \item Nel primo caso, $V_0 = 0$ e $a = 0$, quindi il potenziale è nullo e la particella libera si muove nella scatola. Partendo dal centro della scatola, non c'è oscillazione nella probabilità di misurarla a sinistra o destra ed entrambe valgono $\sim 0.5$.
-    \item Il secondo caso ha $V_0 a^2 = \num{2.5e2}$. Ora la particella oscilla tra le due buche, ma il potenziale è ancora troppo basso purché resti confinata in una delle due. Questo caso è molto simile a $V_0 = 0$, $a \neq 0$, siccome il potenziale è ancora trascurabile rispetto all'energia cinetica.
-    \item Nel terzo caso, $V_0 a^2 = \num{1.8e4}$. In accordo con la previsione di equazione \eqref{eq:extim}, a questo ordine di grandezza la particella risente del potenziale ed è quasi completamente confinata nella buca di partenza (sinistra).
-\end{itemize}
 Studiare la frequenza di oscillazione del moto non è semplice. Quando il potenziale è basso e non c'è confinamento, si può stimare il periodo medio di oscillazione prendendo gli istanti temporali in cui $\mathcal{P}_L(t) = 0.5$ e calcolando la media degli intervalli tra questi istanti. Una stima dell'incertezza sul valor medio del periodo può essere fatta con la deviazione standard dei periodi (diviso la radice del numero di periodi). Quando il potenziale è troppo alto, invece, le probabilità non oscillano più attorno a $0.5$ e diventa difficile stimare i periodi. Per questo motivo, si decide di studiare solo i casi in cui il potenziale è basso.
 \begin{figure}[h!]
     \centering
@@ -292,31 +290,49 @@ Si decide quindi di prendere $\sigma = \sqrt{\Delta x}$.
     \end{minipage}
 \end{figure}
 
-Si mostrano i risultati di una simulazione con $N = 199$, $\Delta t = \num{1e-3}$, $V_0 = 100$, $a = 0.25$. In figura \ref{fig:gauss_prob}, si mostrano le oscillazioni di probabilità: rispetto alla simulazione precedente, l'ampiezza è aumentata, ciò significa che ci sono degli istanti periodici in cui la particella è quasi totalmente localizzabile in una delle due buche. Per verificare ulteriormente la correttezza della simulazione, in figura \ref{fig:gauss_energy} si mostrano i valori di aspettazione dell'energia del sistema in funzione del tempo. Sono calcolati nel seguente modo:
+Si mostrano i risultati di una simulazione con $N = 199$, $\Delta t = \num{1e-3}$, $V_0 = 100$, $a = 0.25$. In figura \ref{fig:gauss_prob}, si mostrano le oscillazioni di probabilità: rispetto alla simulazione precedente, l'ampiezza è aumentata, ciò significa che ci sono degli istanti periodici in cui la particella è quasi totalmente localizzabile in una delle due buche. Rimane tuttavia ancora non banale stimare la frequenza di oscillazione, un modo alternativo per effettuare la stima potrebbe essere quello di prendere in considerazione i picchi della funzione di probabilità. Per verificare ulteriormente la correttezza della simulazione, in figura \ref{fig:gauss_energy} si mostrano i valori di aspettazione dell'energia del sistema in funzione del tempo. Sono calcolati nel seguente modo:
 \begin{align*}
     &\langle T \rangle = \langle \psi(x,t) | T | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) \left(-\frac{1}{2}\pdv[2]{x}\right)\psi(x,t) \dd x\, , \\
     &\langle V \rangle = \langle \psi(x,t) | V | \psi(x,t) \rangle = \int_{-L}^{L} \psi^*(x,t) V(x) \psi(x,t) \dd x = \int_{-L}^{L} V(x) |\psi(x,t)|^2 \dd x\, .
 \end{align*}
 In figura si nota che l'energia totale $\langle H \rangle = \langle T \rangle  + \langle V \rangle$, entro un piccolo scarto, è conservata nel tempo.
-Si riscontra, tuttavia, che l'energia totale dipende dal numero $N$ di divisioni spaziali e quindi dal passo $\Delta x$. Questo è probabilmente imputabile al calcolo dell'energia cinetica con le differenze finite, siccome al denominatore appare il termine $\Delta x^2$ e la dipendenza sembra essere proprio $E \sim N^2$ ad una prima analisi qualitativa. 
+Si riscontra, tuttavia, che l'energia totale dipende dal numero $N$ di divisioni spaziali e quindi dal passo $\Delta x$. Questo è probabilmente imputabile al calcolo dell'energia cinetica con le differenze finite, siccome al denominatore appare il termine $\Delta x^2$ e la dipendenza sembra essere proprio $\langle T \rangle \sim N^2$ ad una prima analisi qualitativa. 
 
-Ciò rende difficile il controllo sulla stabilità al variare di $N$, anche se qualitiativamente la forma delle oscillazioni di probabilità rimane la stessa. La stabilità con passi temporali diversi è invece verificata, a patto di non scegliere $\Delta t \gtrsim 10^{-2}$: un passo troppo grande invalida l'evoluzione temporale del sistema.
+Ciò rende difficile il controllo sulla stabilità al variare di $N$, anche se qualitiativamente la forma delle oscillazioni di probabilità rimane la stessa per $100 \lesssim N \lesssim 400$. La stabilità con passi temporali diversi è invece verificata, a patto di non scegliere $\Delta t \gtrsim 10^{-2}$: un passo troppo grande invalida l'evoluzione temporale del sistema.
 
 \subsection{Trotter-Suzuki}
-
-
+Infine, si mostrano i risultati ottenuti con il metodo di Trotter-Suzuki in figura \ref{fig:gauss_prob_compare} e \ref{fig:gauss_energy_compare}, per una simulazioni con gli stessi parametri della precedente e il pacchetto gaussiano come condizione iniziale.
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/gauss_prob_compare.png}
+        \caption{Confronto delle oscillazioni di probabilità tra i due metodi. I risultati sono molto simili.}
+        \label{fig:gauss_prob_compare}
+    \end{minipage}
+    \hspace{0.02\textwidth}
+    \begin{minipage}[t]{0.47 \textwidth}
+        \centering
+        \includegraphics[width = \linewidth]{figures/gauss_energy_compare.png}
+        \caption{Confronto dei valori di aspettazione dell'energia tra i due metodi. I risultati sono molto simili.}
+        \label{fig:gauss_energy_compare}
+        % \hspace{\linewidth}
+    \end{minipage}
+\end{figure}
+Si nota che le simulazioni forniscono risultati in accordo e molto simili. Ciò evidenzia la bontà dell'approssimazione al primo ordine in Crank-Nicolson, che lo rende probabilmente il metodo più conveniente, a causa dell'elevata complessità computazionale di Trotter-Suzuki ($\mathcal{O}(N^3)$!).
 
 
 \section{Conclusioni}
-In questo progetto, è stata studiata l'equazione di Schrödinger in una dimensione utilizzando due metodi numerici: il metodo di Eulero esplicito e il metodo di Crank-Nicolson. Entrambi i metodi sono stati implementati e i risultati delle simulazioni sono stati confrontati per il caso di particella libera e per il caso di potenziale a doppia buca.
+In conclusione, sono stati implementati e confrontati diversi metodi numerici per la risoluzione dell'equazione di Schrödinger in una dimensione. 
 
-I risultati mostrano che il metodo di Eulero esplicito non conserva la normalizzazione della funzione d'onda, rendendolo inadatto per simulazioni a lungo termine. Al contrario, il metodo di Crank-Nicolson conserva la normalizzazione e fornisce risultati fisicamente corretti, anche se richiede una maggiore complessità computazionale.
+Il metodo di Eulero esplicito, sebbene semplice da implementare, ha mostrato problemi di stabilità e conservazione della normalizzazione della funzione d'onda. Questo metodo, infatti, tende a far crescere esponenzialmente la normalizzazione, rendendolo inadatto per simulazioni a lungo termine.
 
-Nel caso del potenziale a doppia buca, è stato osservato che la particella oscilla tra le due buche con una frequenza che dipende dai parametri del potenziale. Tuttavia, la stima della frequenza di oscillazione è risultata difficile a causa delle incertezze nei dati.
+Il metodo di Crank-Nicolson, invece, ha garantito una buona conservazione della normalizzazione e dell'energia del sistema, risultando più affidabile per le simulazioni a lungo termine. Questo metodo combina un passo esplicito e uno implicito, permettendo di mantenere la stabilità numerica e di ottenere risultati fisicamente significativi. La sua implementazione ha dimostrato inoltre di essere efficiente dal punto di vista computazionale.
 
-Infine, la simulazione è stata migliorata utilizzando un pacchetto gaussiano come condizione iniziale, ottenendo risultati più stabili e fisicamente accurati. La conservazione dell'energia totale del sistema è stata verificata entro un piccolo scarto.
+Infine, il metodo di Trotter-Suzuki ha fornito risultati in accordo con quelli di Crank-Nicolson, ma con una complessità computazionale maggiore. La necessità di diagonalizzare la matrice di Töplitz e di eseguire delle moltiplicazioni tra matrici non tridiagonali rende questo metodo meno conveniente per simulazioni su larga scala.
 
-In conclusione, il metodo di Crank-Nicolson si è dimostrato più affidabile per la simulazione dell'equazione di Schrödinger, specialmente quando si utilizzano condizioni iniziali più realistiche come il pacchetto gaussiano.
+Pertanto, per simulazioni efficienti e accurate, il metodo di Crank-Nicolson si è rivelato il più conveniente. Le simulazioni hanno permesso di studiare il comportamento di una particella libera e di una particella in un potenziale a doppia buca, evidenziando l'importanza della scelta delle condizioni iniziali e dei parametri del potenziale per ottenere risultati fisicamente significativi. In particolare, l'uso di un pacchetto gaussiano come condizione iniziale ha migliorato la stabilità e l'accuratezza delle simulazioni, permettendo di osservare chiaramente le oscillazioni di probabilità tra le due buche del potenziale.
+
 
 
 

@@ -95,17 +95,18 @@ void trotterSuzukiStep(int N, double *V, double dt, double dx, double complex *p
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             P[i][j] = sin((i + 1) * (j + 1) * M_PI / (N + 1));
+            // printf("P[%d][%d] = %f\n", i, j, P[i][j]);
         }
     }
 
-    double norm; // normalize eigenvectors
+    // normalize eigenvectors
     for (int j = 0; j < N; j++) {
-        norm = 0;
+        double norm = 0.0;
         for (int i = 0; i < N; i++) {
-            norm += P[i][j];
+            norm += P[i][j]*P[i][j];
         }
         for (int i = 0; i < N; i++) {
-            P[i][j] /= norm;
+            P[i][j] /= sqrt(norm);
         }
     }
 
@@ -113,6 +114,7 @@ void trotterSuzukiStep(int N, double *V, double dt, double dx, double complex *p
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             P_inv[i][j] = P[j][i];
+            // printf("P_inv[%d][%d] = %f\n", i, j, P_inv[i][j]);
         }
     }
 
@@ -128,21 +130,23 @@ void trotterSuzukiStep(int N, double *V, double dt, double dx, double complex *p
     }
 
     double complex temp[N][N];
-    double complex expT[N][N];
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             temp[i][j] = 0.0;
             for (int k = 0; k < N; k++) {
                 temp[i][j] += expD[i][k] * P[k][j];
             }
+            // printf("temp[%d][%d] = %f + %fi\n", i, j, creal(temp[i][j]), cimag(temp[i][j]));
         }
     }
+    double complex expT[N][N];
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             expT[i][j] = 0.0;
             for (int k = 0; k < N; k++) {
-                expT[i][j] += P_inv[i][k] * expD[k][j];
+                expT[i][j] += P_inv[i][k] * temp[k][j];
             }
+            // printf("expT[%d][%d] = %f + %fi\n", i, j, creal(expT[i][j]), cimag(expT[i][j]));
         }
     }
 

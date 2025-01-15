@@ -1,4 +1,5 @@
 // SOLVES THE 1-D SCHROEDINGER EQUATION FOR A FINITE BOX AND A DOUBLE WELL POTENTIAL
+// CRANK-NICOLSON METHOD
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
@@ -25,8 +26,8 @@ int main(int argc, char** argv) {
     int M = 5.0e3;                                  // number of time steps
     double L = 1.0;                                 // box size
     double dx = 2 * L / (double)(N + 1);            // space interval
-    // double dt = atof(argv[2]);                      // time interval
-    double dt = dx * dx;                            // time interval to keep same eta
+    double dt = atof(argv[2]);                      // time interval
+    // double dt = dx * dx;                            // time interval to keep same eta
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
     // printf("eta = %.2f + %.2fi\n", creal(eta), cimag(eta));
@@ -72,14 +73,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    // DEBUG: PRINT A_HALF
-    // for (int i = 0; i < N; i++) {
-    //     for (int j = 0; j < N; j++) {
-    //         printf("(%2.1f + %2.6fi) ", creal(A_half[i][j]), cimag(A_half[i][j]));
-    //     }
-    //     printf("\n");
-    // }
-
     // implicit C-N evolution coefficients
     double complex a[N];
     double complex alpha[N];
@@ -94,17 +87,8 @@ int main(int argc, char** argv) {
         alpha[i] = a[i] - (eta * eta) / (4 * alpha[i-1]);
     }
     
-    // initial condition
+    // initial condition gaussian wave packet
     double complex psi[N];
-    // int i_start = (int)((L - sqrt(A)) / dx) - 1;
-    // psi[i_start] = 1.0;
-    // for (int i = 0; i < N; i++) {
-    //     if (i != i_start) {
-    //         psi[i] = 0.0;
-    //     }
-    // }
-
-    // trying another initial condition
     double sigma = 1.0 * sqrt(dx);
     // double sigma = 0.001 / dx;
     for (int i = 0; i < N; i++) {

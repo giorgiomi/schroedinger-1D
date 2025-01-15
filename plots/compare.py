@@ -4,12 +4,12 @@ import numpy as np
 from functions import getParam
 
 # Load parameters and data for TS simulation
-N, M, L, dx, dt, V0, a = getParam("data/test/paramT-S.csv")
-data_ts = pd.read_csv("data/test/energy.csv")
+N, M, L, dx, dt, V0, a = getParam("data/trapped/paramT-S.csv")
+data_ts = pd.read_csv("data/trapped/energyT-S.csv")
 
 # Load parameters and data for CN simulation
-N_cn, M_cn, L_cn, dx_cn, dt_cn, V0_cn, a_cn = getParam("data/trapped/param.csv")
-data_cn = pd.read_csv("data/trapped/energy.csv")
+N_cn, M_cn, L_cn, dx_cn, dt_cn, V0_cn, a_cn = getParam("data/trapped/paramC-N.csv")
+data_cn = pd.read_csv("data/trapped/energyC-N.csv")
 
 # Check that the parameters are the same
 assert (N, M, L, dx, dt, V0, a) == (N_cn, M_cn, L_cn, dx_cn, dt_cn, V0_cn, a_cn), "Parameters do not match between TS and CN simulations"

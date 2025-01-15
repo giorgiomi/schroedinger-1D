@@ -4,6 +4,8 @@
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
 #include <math.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "functions.h"
 
 double potential(double x, double V0, double a) {
@@ -35,17 +37,23 @@ int main(int argc, char** argv) {
     double A = atof(argv[4]);                       // double well separation parameter
     int n_print = 1;                                // print on file every n_print iteration
 
-    // printf("==================================================================================\n");    
-    // printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+    printf("==================================================================================\n");    
+    printf("Running C-N with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+
+    // data folder
+    struct stat st = {0};
+    if (stat("data/trapped", &st) == -1) {
+        mkdir("data/trapped", 0700);
+    }
 
     // files
     FILE* f_psi = fopen("data/trapped/C-N.csv", "w");
     printHeaderOnFile(f_psi, N, 1);
 
-    FILE* f_energy = fopen("data/trapped/energy.csv", "w");
+    FILE* f_energy = fopen("data/trapped/energyC-N.csv", "w");
     fprintf(f_energy, "t,K,V,E\n");
 
-    FILE* f_param = fopen("data/trapped/param.csv", "w");
+    FILE* f_param = fopen("data/trapped/paramC-N.csv", "w");
     fprintf(f_param, "N,M,L,dx,dt,V0,a\n");
     fprintf(f_param, "%d,%d,%.10f,%.10f,%.10f,%.10f,%.10f\n", N, M, L, dx, dt, V0, A);
 
@@ -128,8 +136,8 @@ int main(int argc, char** argv) {
         }
     }
 
-    // printf("\n\nSimulation completed 🎉🎊\n");
-    // printf("==================================================================================\n");
+    printf("\n\nSimulation completed 🎉🎊\n");
+    printf("==================================================================================\n");
 
     for (int i = 0; i < N; i++) {
         free(A_half[i]);

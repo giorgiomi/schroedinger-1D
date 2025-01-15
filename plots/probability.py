@@ -7,8 +7,8 @@ import sys
 warnings.filterwarnings("ignore")
 
 
-N, M, L, dx, dt, V0, a = getParam("data/test/paramT-S.csv")
-dataCN = pd.read_csv("data/test/T-S.csv")
+N, M, L, dx, dt, V0, a = getParam("data/trapped/paramT-S.csv")
+dataCN = pd.read_csv("data/trapped/T-S.csv")
 
 t = dataCN['t']
 prob_left = dataCN['p_l']

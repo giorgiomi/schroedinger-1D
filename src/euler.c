@@ -1,21 +1,36 @@
+// SOLVES THE 1-D SCHROEDINGER EQUATION FOR A FREE PARTICLE IN A FINITE BOX
+// EULER (EXPLICIT) METHOD
 #include <stdio.h>
 #include <complex.h> // library for complex numbers
 #include <stdlib.h>
 #include <math.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "functions.h"
 
-int main(int arcv, char** argv) {
+int main(int argc, char** argv) {
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <N> <dt>\n", argv[0]);
+        return 1;
+    }
+
     // parameters
     double L = 1.0;                                 // box size
-    int N = 199;                                    // number of grid separations
+    int N = atoi(argv[1]);                                    // number of grid separations
     int M = 3e4;                                    // number of time steps
     double dx = 2 * L / (double)(N + 1);            // space interval
-    double dt = 1e-6;                               // time interval
+    double dt = atof(argv[2]);                               // time interval
     double complex dtau = - dt * I;                 // complex tau interval
     double complex eta = - dtau / (2 * dx * dx);    // eta parameter
 
     printf("==================================================================================\n");    
-    printf("Running Eu with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+    printf("Running EU with N = %d, M = %d, L = %.2f, dx = %.4e, dt = %.2e\n\n", N, M, L, dx, dt);
+
+    // data folder
+    struct stat st = {0};
+    if (stat("data/free", &st) == -1) {
+        mkdir("data/free", 0700);
+    }
 
     // files
     FILE* f_psi = fopen("data/free/EU.csv", "w");

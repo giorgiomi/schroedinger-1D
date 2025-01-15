@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 from functions import getParam
 
-N, M, L, dx, dt, V0, a = getParam("data/test/paramT-S.csv")
-data = pd.read_csv("data/test/energy.csv")
+N, M, L, dx, dt, V0, a = getParam("data/trapped/paramT-S.csv")
+data = pd.read_csv("data/trapped/energyT-S.csv")
 
 t = data['t']
 K = data['K']

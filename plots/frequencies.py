@@ -3,8 +3,8 @@ import pandas as pd
 from functions import getParam
 
 # Load the frequencies data
-data = pd.read_csv('data/trapped/frequencies.csv')
-N, M, L, dx, dt, V0, a = getParam("data/trapped/param.csv")
+data = pd.read_csv('data/trapped/frequenciesC-N.csv')
+N, M, L, dx, dt, V0, a = getParam("data/trapped/paramC-N.csv")
 
 # Plot the frequencies as a function of a or V
 if 'a' in data:

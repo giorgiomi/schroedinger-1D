@@ -7,8 +7,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # data = pd.read_csv("data/trapped/C-N.csv")
 # N, M, L, dx, dt, V0, a = getParam("data/trapped/param.csv")
-data = pd.read_csv("data/test/T-S.csv")
-N, M, L, dx, dt, V0, a = getParam("data/test/paramT-S.csv")
+data = pd.read_csv("data/trapped/T-S.csv")
+N, M, L, dx, dt, V0, a = getParam("data/trapped/paramT-S.csv")
 
 # Extract time and psi data
 time = data.iloc[:, 0].values
